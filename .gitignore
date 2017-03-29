@@ -8,6 +8,5 @@ results
 *.log
 docs/*.html
 docs/*.json
-node_modules
 .idea
 *.iml
