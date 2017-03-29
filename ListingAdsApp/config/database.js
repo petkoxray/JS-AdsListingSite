@@ -15,6 +15,8 @@ module.exports = (config) => {
     });
 
     require('./../models/User');
+    require('./../models/Ad');
+
 };
 
 
