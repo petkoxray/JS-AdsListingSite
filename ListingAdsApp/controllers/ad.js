@@ -47,5 +47,40 @@ module.exports = {
             res.render('ad/details', ad)
         })
     },
+
+    editGet: (req ,res) => {
+        let id = req.params.id;
+
+        Ad.findById(id).populate('author').then( ad => {
+            res.render('ad/edit', ad)
+        })
+    },
+
+    editPost: (req, res) => {
+        let id = req.params.id;
+        let adArgs = req.body;
+        let errorMsg = '';
+
+        if (!adArgs.title) {
+            errorMsg = 'Ad title cannot be empty!'
+        } else if (!adArgs.content) {
+          errorMsg = 'Ad content cannot be empty!'
+        } else if (!adArgs.phone) {
+            errorMsg = 'Phone must be valid'
+        }
+
+        if (errorMsg) {
+            res.render('ad/edit', {error: errorMsg})
+        } else {
+            Ad.update({_id: id},
+                {$set:
+                    {title: adArgs.title, content: adArgs.content, phone: adArgs.phone}})
+                .then(updateStatus => {
+                    res.redirect(`/ad/details/${id}`)
+                })
+        }
+    },
+
 }
+
 
