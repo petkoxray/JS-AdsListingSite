@@ -39,5 +39,13 @@ module.exports = {
         })
 
     },
+
+    detailsGet: (req, res) => {
+        let id = req.params.id;
+
+        Ad.findById(id).populate('author').then( ad => {
+            res.render('ad/details', ad)
+        })
+    },
 }
 

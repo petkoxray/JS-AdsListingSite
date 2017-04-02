@@ -39,7 +39,9 @@
         </div>
     </header>
     {{#if error }}
-        <h2>{{error}}</h2>
+        <div class="alert alert-warning text-center">
+            <strong> {{ error }}</strong>
+        </div>
     {{/if}}
     {{{body}}}
 </body>
