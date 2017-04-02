@@ -21,6 +21,9 @@ module.exports = (app) => {
     app.get('/ad/edit/:id', adController.editGet);
     app.post('/ad/edit/:id', adController.editPost);
 
+    app.get('/ad/delete/:id', adController.deleteGet);
+    app.post('/ad/delete/:id', adController.deletePost);
+
 
 };
 

@@ -81,6 +81,36 @@ module.exports = {
         }
     },
 
+    deleteGet: (req , res) => {
+        let id = req.params.id;
+
+        Ad.findById(id).populate('author').then( ad => {
+            res.render('ad/delete', ad)
+        })
+    },
+
+    deletePost: (req, res) => {
+        let id = req.params.id;
+
+        Ad.findByIdAndRemove(id).populate('author').then(ad => {
+            let author = ad.author;
+
+            let index = author.ads.indexOf(ad.id);
+
+            if (index < 0) {
+                let errMsg = 'Ad was not found for author';
+                res.render('ad/delete', {error: errMsg})
+            } else {
+                author.ads.splice(index, 1);
+                author.save().then(() => {
+                    res.redirect('/');
+                })
+            }
+        })
+    },
+
+
 }
+
 
 
