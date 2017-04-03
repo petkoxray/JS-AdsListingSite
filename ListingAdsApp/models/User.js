@@ -36,6 +36,11 @@ module.exports.initialize =  () => {
             console.log('Admin is already created!');
         } else {
             Role.findOne({name: 'Admin'}).then(role => {
+
+                if (!role) {
+                    return;
+                }
+
                 let salt = encryption.generateSalt();
                 let passwordHash = encryption.hashPassword('pass', salt);
 
@@ -44,8 +49,8 @@ module.exports.initialize =  () => {
                     fullName: 'Admin Adminov',
                     salt: salt,
                     passwordHash: passwordHash,
-                    ads: [],
-                    roles: [role.id]
+                    roles: [role.id],
+                    ads: []
                 };
 
                 User.create(adminUser).then(adminUser => {
@@ -61,6 +66,7 @@ module.exports.initialize =  () => {
             })
         }
     })
-}
+};
+
 
 
