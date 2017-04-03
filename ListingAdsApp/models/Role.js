@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
-const ObjectId = mongoose.Schema.ObjectId;
+const ObjectId = mongoose.Schema.Types.ObjectId;
 
-function initiliazeRole(roleName) {
+function initializeRole(roleName) {
     let roleData = {name: roleName};
     Role.findOne(roleData).then(role => {
         if (!role) {
@@ -20,6 +20,6 @@ let roleSchema = mongoose.Schema (
 let Role = mongoose.model('Role',roleSchema);
 
 module.exports.initialize = () => {
-    initiliazeRole('User');
-    initiliazeRole('Admin');
+    initializeRole('User');
+    initializeRole('Admin');
 };
