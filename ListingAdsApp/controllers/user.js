@@ -89,5 +89,30 @@ module.exports = {
     logout: (req, res) => {
         req.logOut();
         res.redirect('/');
-    }
+    },
+
+    detailsGet: (req, res) => {
+        if (!req.isAuthenticated()) {
+            res.redirect('/');
+            return;
+        }
+
+        let user = req.user;
+        res.render('user/details', {user: user})
+    },
+
+    detailsPost: (req , res) => {
+        if (!req.isAuthenticated()) {
+            res.redirect('/');
+            return;
+        }
+        let id = req.user.id;
+        let userArgs = req.body;
+
+        User.update({_id: id},{$set: {fullName: userArgs.fullName}})
+            .then(updateStatus => {
+                res.redirect('/user/details/')
+            })
+    },
+
 };
