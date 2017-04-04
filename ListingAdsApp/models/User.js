@@ -16,12 +16,33 @@ let userSchema = mongoose.Schema(
 );
 
 userSchema.method ({
-   authenticate: function (password) {
+    authenticate: function (password) {
        let inputPasswordHash = encryption.hashPassword(password, this.salt);
        let isSamePasswordHash = inputPasswordHash === this.passwordHash;
 
        return isSamePasswordHash;
-   }
+   },
+
+    isAuthor: function (ad) {
+        if (!ad) {
+            return false;
+        }
+
+        let id = ad.author.id;
+
+        return this.id === id;
+    },
+
+    isInRole: function (roleName) {
+        return Role.findOne({name: roleName}).then(role => {
+            if (!role) {
+                return false;
+            }
+
+            let isInRole = this.roles.indexOf(role.id) !== -1;
+            return isInRole;
+        })
+    }
 });
 
 const User = mongoose.model('User', userSchema);

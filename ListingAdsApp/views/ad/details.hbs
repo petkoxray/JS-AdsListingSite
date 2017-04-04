@@ -3,21 +3,23 @@
         <div class="col-md-12">
             <article>
                 <header>
-                    <h2>{{title}}</h2>
+                    <h2>{{ad.title}}</h2>
                 </header>
 
                 <p>
-                    {{content}}
+                    {{ad.content}}
                 </p>
 
                 <small class="author">
-                    {{author.fullName}}
+                    {{ad.author.fullName}}
                 </small>
 
                 <footer>
                     <div class="pull-right">
+                        {{#if isUserAuthorized}}
                         <a class="btn btn-success btn-xs" href="/ad/edit/{{id}}">Edit &raquo;</a>
                         <a class="btn btn-danger btn-xs" href="/ad/delete/{{id}}">Delete &raquo;</a>
+                        {{/if}}
                         <a class="btn btn-default btn-xs" href="/">Back &raquo;</a>
                     </div>
                 </footer>

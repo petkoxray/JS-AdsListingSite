@@ -44,15 +44,34 @@ module.exports = {
         let id = req.params.id;
 
         Ad.findById(id).populate('author').then( ad => {
-            res.render('ad/details', ad)
+            if (!req.user) {
+                res.render('ad/details', {ad: ad, isUserAuthorized: false});
+                return;
+            }
+
+            req.user.isInRole('Admin').then(isAdmin => {
+                let isUserAuthorized = isAdmin || req.user.isAuthor(ad);
+                res.render('ad/details', {ad: ad, isUserAuthorized: isUserAuthorized});
+            });
         })
     },
 
     editGet: (req ,res) => {
         let id = req.params.id;
+        if (!req.isAuthenticated()) {
+            res.redirect('/');
+            return;
+        }
 
         Ad.findById(id).populate('author').then( ad => {
-            res.render('ad/edit', ad)
+            req.user.isInRole('Admin').then(isAdmin => {
+                if (isAdmin || req.user.isAuthor(ad)) {
+                    res.render('ad/edit', ad);
+                    return;
+                }
+
+                res.redirect('/');
+            })
         })
     },
 
@@ -60,6 +79,7 @@ module.exports = {
         let id = req.params.id;
         let adArgs = req.body;
         let errorMsg = '';
+
 
         if (!adArgs.title) {
             errorMsg = 'Ad title cannot be empty!'
@@ -84,8 +104,19 @@ module.exports = {
     deleteGet: (req , res) => {
         let id = req.params.id;
 
+        if (!req.isAuthenticated()) {
+            res.redirect('/');
+            return;
+        }
+
         Ad.findById(id).populate('author').then( ad => {
-            res.render('ad/delete', ad)
+            req.user.isInRole('Admin').then(isAdmin => {
+                if (isAdmin || req.user.isAuthor(ad)) {
+                    res.render('ad/delete', ad);
+                    return;
+                }
+                res.redirect('/');
+            });
         })
     },
 
@@ -111,6 +142,9 @@ module.exports = {
 
 
 }
+
+
+
 
 
 
