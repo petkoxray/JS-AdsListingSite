@@ -1,12 +1,2 @@
-coverage/
 .DS_Store
-pids
-logs
-results
-*.pid
-*.gz
-*.log
-docs/*.html
-docs/*.json
 .idea
-*.iml
