@@ -25,7 +25,19 @@ module.exports = {
             return;
         }
 
-        let image = req.file.image;
+        let image = req.files.image;
+
+        if (image) {
+            let filename = image.name;
+
+            image.mv(`./public/images/${filename}`, err => {
+                if (err) {
+                    console.log(err.message);
+                }
+            });
+
+            adArgs.imagePath = `/images/${image.name}`;
+        }
 
         adArgs.author = req.user.id;
 

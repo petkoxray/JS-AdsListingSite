@@ -7,7 +7,8 @@ let adSchema = mongoose.Schema (
         title: {type: String, required: true },
         content: {type: String, required: true },
         phone: {type: Number, required: true },
-        date: {type: Date, default: Date.now() }
+        date: {type: Date, default: Date.now() },
+        imagePath: {type: String}
     }
 );
 
