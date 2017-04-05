@@ -1,5 +1,6 @@
 const User = require('mongoose').model('User');
 const Role = require('mongoose').model('Role');
+const Ad = require('mongoose').model('Ad');
 const encryption = require('./../utilities/encryption');
 
 module.exports = {
@@ -114,5 +115,17 @@ module.exports = {
                 res.redirect('/user/details/')
             })
     },
+
+    myAdsGet: (req, res) => {
+        if (!req.isAuthenticated()) {
+            res.redirect('/');
+            return;
+        }
+
+        User.findOne({_id: req.user.id}).populate('ads').then(u => {
+            let ads = u.ads;
+            res.render('user/ads', {ads: ads})
+        })
+    }
 
 };
