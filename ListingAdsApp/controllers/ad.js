@@ -1,4 +1,5 @@
 const Ad = require('mongoose').model('Ad');
+const randomString = require('randomstring');
 
 module.exports = {
     createGet: (req, res) => {
@@ -28,15 +29,19 @@ module.exports = {
         let image = req.files.image;
 
         if (image) {
-            let filename = image.name;
+            let filenameAndExt = image.name;
+            let index = filenameAndExt.lastIndexOf('.');
+            let filename = filenameAndExt.substr(0,index);
+            let ext = filenameAndExt.substr(index);
+            let finalName = filename + randomString.generate(7) + ext;
 
-            image.mv(`./public/images/${filename}`, err => {
+            image.mv(`./public/images/${finalName}`, err => {
                 if (err) {
                     console.log(err.message);
                 }
             });
 
-            adArgs.imagePath = `/images/${filename}`;
+            adArgs.imagePath = `/images/${finalName}`;
         }
 
         adArgs.author = req.user.id;
