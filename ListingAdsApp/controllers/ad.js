@@ -25,6 +25,8 @@ module.exports = {
             return;
         }
 
+        let image = req.file.image;
+
         adArgs.author = req.user.id;
 
         Ad.create(adArgs).then( ad => {
