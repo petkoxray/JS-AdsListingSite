@@ -28,7 +28,6 @@ module.exports = (app, config) => {
     //user express fileupload to handle multipart from data
     app.use(fileUpload());
 
-
     app.use((req, res, next) => {
         if(req.user){
             res.locals.user = req.user;

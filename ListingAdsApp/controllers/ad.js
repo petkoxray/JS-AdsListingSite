@@ -21,7 +21,7 @@ module.exports = {
         }
 
         if (errorMsg) {
-            res.render('ad/create', { error: errorMsg })
+            res.render('ad/create', { error: errorMsg });
             return;
         }
 
@@ -36,7 +36,7 @@ module.exports = {
                 }
             });
 
-            adArgs.imagePath = `/images/${image.name}`;
+            adArgs.imagePath = `/images/${filename}`;
         }
 
         adArgs.author = req.user.id;
