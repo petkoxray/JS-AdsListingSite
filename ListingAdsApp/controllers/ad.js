@@ -1,3 +1,4 @@
+const Category = require('mongoose').model('Category');
 const Ad = require('mongoose').model('Ad');
 const randomString = require('randomstring');
 
@@ -46,17 +47,26 @@ module.exports = {
 
         adArgs.author = req.user.id;
 
-        Ad.create(adArgs).then( ad => {
-            req.user.ads.push(ad.id);
-            req.user.save(err => {
-                if (err) {
-                    res.redirect('/', {err: err.message})
-                } else {
-                    res.redirect('/')
-                }
+        Category.findOne({name: adArgs.category}).then(cat => {
+            adArgs.category = cat.id;
+            Ad.create(adArgs).then( ad => {
+                cat.ads.push(ad.id);
+                cat.save(err => {
+                    if (err) {
+                        console.log(err);
+                    }
+                });
+                req.user.ads.push(ad.id);
+                req.user.save(err => {
+                    if (err) {
+                        res.redirect('/', {err: err.message})
+                    } else {
+                        res.redirect('/')
+                    }
+                })
             })
-        })
 
+        });
     },
 
     detailsGet: (req, res) => {
@@ -108,6 +118,8 @@ module.exports = {
             errorMsg = 'Phone must be valid'
         } else if (!adArgs.price) {
             errorMsg = 'Price must be valid'
+        } else if (!adArgs.price) {
+            errorMsg = 'Phone must be valid'
         }
 
         if (errorMsg) {
@@ -162,6 +174,7 @@ module.exports = {
     },
 
 }
+
 
 
 

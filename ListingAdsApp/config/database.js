@@ -16,8 +16,8 @@ module.exports = (config) => {
 
     require('./../models/Role').initialize();
     require('./../models/User').initialize();
+    require('./../models/Category').initialize();
     require('./../models/Ad');
-
 };
 
 

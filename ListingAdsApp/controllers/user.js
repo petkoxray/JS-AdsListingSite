@@ -35,7 +35,6 @@ module.exports = {
                         salt: salt,
                         roles: roles
                     };
-
                     User.create(userObject).then(user => {
                         role.users.push(user.id);
                         role.save(err => {

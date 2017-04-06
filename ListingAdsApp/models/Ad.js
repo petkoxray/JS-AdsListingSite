@@ -6,6 +6,7 @@ let adSchema = mongoose.Schema (
         author: {type: ObjectId, ref: 'User'},
         title: {type: String, required: true },
         content: {type: String, required: true },
+        category: {type: ObjectId, ref: 'Category', required: true},
         phone: {type: Number, required: true },
         date: {type: Date, default: Date.now() },
         price: {type: Number, required:true},
