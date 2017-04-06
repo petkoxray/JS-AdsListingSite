@@ -106,6 +106,8 @@ module.exports = {
           errorMsg = 'Ad content cannot be empty!'
         } else if (!adArgs.phone) {
             errorMsg = 'Phone must be valid'
+        } else if (!adArgs.price) {
+            errorMsg = 'Price must be valid'
         }
 
         if (errorMsg) {
@@ -113,7 +115,7 @@ module.exports = {
         } else {
             Ad.update({_id: id},
                 {$set:
-                    {title: adArgs.title, content: adArgs.content, phone: adArgs.phone}})
+                    {title: adArgs.title, price: adArgs.price, content: adArgs.content, phone: adArgs.phone}})
                 .then(updateStatus => {
                     res.redirect(`/ad/details/${id}`)
                 })
