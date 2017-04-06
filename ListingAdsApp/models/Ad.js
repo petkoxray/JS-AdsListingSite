@@ -8,6 +8,7 @@ let adSchema = mongoose.Schema (
         content: {type: String, required: true },
         phone: {type: Number, required: true },
         date: {type: Date, default: Date.now() },
+        price: {type: Number, required:true},
         imagePath: {type: String}
     }
 );
