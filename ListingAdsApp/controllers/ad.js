@@ -1,4 +1,5 @@
 const Category = require('mongoose').model('Category');
+const Town = require('mongoose').model('Town');
 const Ad = require('mongoose').model('Ad');
 const randomString = require('randomstring');
 
@@ -22,8 +23,6 @@ module.exports = {
             errorMsg = 'Invalid phone number'
         } else if (!adArgs.price) {
             errorMsg = 'Price should be valid'
-        } else if (!adArgs.imagePath) {
-            errorMsg = 'You should upload image'
         }
 
         if (errorMsg) {
@@ -52,22 +51,28 @@ module.exports = {
         adArgs.author = req.user.id;
 
         Category.findOne({name: adArgs.category}).then(cat => {
-            adArgs.category = cat.id;
-            Ad.create(adArgs).then( ad => {
-                cat.ads.push(ad.id);
-                cat.save(err => {
-                    if (err) console.log(err);
-                });
-                req.user.ads.push(ad.id);
-                req.user.save(err => {
-                    if (err) {
-                        res.redirect('/', {err: err.message})
-                    } else {
-                        res.redirect('/')
-                    }
+            Town.findOne({name: adArgs.town}).then(town => {
+                adArgs.category = cat.id;
+                adArgs.town = town.id;
+                Ad.create(adArgs).then( ad => {
+                    cat.ads.push(ad.id);
+                    cat.save(err => {
+                        if (err) console.log(err);
+                    });
+                    town.ads.push(ad.id);
+                    town.save(err => {
+                        if (err) console.log(err);
+                    });
+                    req.user.ads.push(ad.id);
+                    req.user.save(err => {
+                        if (err) {
+                            res.redirect('/', {err: err.message})
+                        } else {
+                            res.redirect('/')
+                        }
+                    })
                 })
             })
-
         });
     },
 
@@ -94,7 +99,7 @@ module.exports = {
             return;
         }
 
-        Ad.findById(id).populate('author category').then( ad => {
+        Ad.findById(id).populate('author category town').then( ad => {
             req.user.isInRole('Admin').then(isAdmin => {
                 if (isAdmin || req.user.isAuthor(ad)) {
                     res.render('ad/edit', ad);
@@ -120,8 +125,6 @@ module.exports = {
             errorMsg = 'Phone must be valid'
         } else if (!adArgs.price) {
             errorMsg = 'Price must be valid'
-        } else if (!adArgs.phone) {
-            errorMsg = 'Phone must be valid'
         }
 
         if (errorMsg) {
@@ -144,7 +147,7 @@ module.exports = {
             return;
         }
 
-        Ad.findById(id).populate('author category').then( ad => {
+        Ad.findById(id).populate('author category town').then( ad => {
             req.user.isInRole('Admin').then(isAdmin => {
                 if (isAdmin || req.user.isAuthor(ad)) {
                     res.render('ad/delete', ad);
