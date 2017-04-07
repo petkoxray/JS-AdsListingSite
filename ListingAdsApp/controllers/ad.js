@@ -161,16 +161,34 @@ module.exports = {
     deletePost: (req, res) => {
         let id = req.params.id;
 
-        Ad.findByIdAndRemove(id).populate('author').then(ad => {
+        Ad.findByIdAndRemove(id).populate('author category town').then(ad => {
             let author = ad.author;
+            let category = ad.category;
+            let town = ad.town;
+            let authorIndex = author.ads.indexOf(ad.id);
+            let categoryIndex = category.ads.indexOf(ad.id);
+            let townIndex = town.ads.indexOf(ad.id);
+            let errMsg = '';
 
-            let index = author.ads.indexOf(ad.id);
-
-            if (index < 0) {
-                let errMsg = 'Ad was not found for author';
+            if (authorIndex < 0) {
+                errMsg = 'Ad was not found for author';
+                res.render('ad/delete', {error: errMsg})
+            } else if (townIndex < 0) {
+                errMsg = 'Ad was not found for town';
+                res.render('ad/delete', {error: errMsg})
+            } else if (categoryIndex < 0) {
+                errMsg = 'Ad was not found for category';
                 res.render('ad/delete', {error: errMsg})
             } else {
-                author.ads.splice(index, 1);
+                category.ads.splice(categoryIndex,1);
+                category.save(err => {
+                    if (err) console.log(err);
+                });
+                town.ads.splice(townIndex,1);
+                town.save(err => {
+                    if (err) console.log(err);
+                });
+                author.ads.splice(authorIndex, 1);
                 author.save().then(() => {
                     res.redirect('/');
                 })
@@ -179,6 +197,9 @@ module.exports = {
     },
 
 }
+
+
+
 
 
 
