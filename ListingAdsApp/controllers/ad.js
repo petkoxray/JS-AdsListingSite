@@ -20,6 +20,10 @@ module.exports = {
             errorMsg = 'Invalid content'
         } else if (!adArgs.phone) {
             errorMsg = 'Invalid phone number'
+        } else if (!adArgs.price) {
+            errorMsg = 'Price should be valid'
+        } else if (!adArgs.imagePath) {
+            errorMsg = 'You should upload image'
         }
 
         if (errorMsg) {
@@ -52,9 +56,7 @@ module.exports = {
             Ad.create(adArgs).then( ad => {
                 cat.ads.push(ad.id);
                 cat.save(err => {
-                    if (err) {
-                        console.log(err);
-                    }
+                    if (err) console.log(err);
                 });
                 req.user.ads.push(ad.id);
                 req.user.save(err => {
@@ -92,7 +94,7 @@ module.exports = {
             return;
         }
 
-        Ad.findById(id).populate('author').then( ad => {
+        Ad.findById(id).populate('author category').then( ad => {
             req.user.isInRole('Admin').then(isAdmin => {
                 if (isAdmin || req.user.isAuthor(ad)) {
                     res.render('ad/edit', ad);
@@ -118,7 +120,7 @@ module.exports = {
             errorMsg = 'Phone must be valid'
         } else if (!adArgs.price) {
             errorMsg = 'Price must be valid'
-        } else if (!adArgs.price) {
+        } else if (!adArgs.phone) {
             errorMsg = 'Phone must be valid'
         }
 
@@ -142,7 +144,7 @@ module.exports = {
             return;
         }
 
-        Ad.findById(id).populate('author').then( ad => {
+        Ad.findById(id).populate('author category').then( ad => {
             req.user.isInRole('Admin').then(isAdmin => {
                 if (isAdmin || req.user.isAuthor(ad)) {
                     res.render('ad/delete', ad);
@@ -174,6 +176,8 @@ module.exports = {
     },
 
 }
+
+
 
 
 
