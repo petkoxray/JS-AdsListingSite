@@ -3,6 +3,7 @@ const homeController = require('./../controllers/home');
 const adController = require('./../controllers/ad')
 const categoryController = require('./../controllers/category');
 const townController = require('./../controllers/town');
+const adminController = require('./../controllers/admin');
 
 module.exports = (app) => {
     app.get('/', homeController.index);
@@ -36,6 +37,8 @@ module.exports = (app) => {
 
     app.get('/town', townController.index);
     app.get('/town/:id', townController.town);
+
+    app.get('/admin', adminController.index);
 
 };
 
