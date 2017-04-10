@@ -2,6 +2,7 @@ const userController = require('./../controllers/user');
 const homeController = require('./../controllers/home');
 const adController = require('./../controllers/ad')
 const categoryController = require('./../controllers/category');
+const townController = require('./../controllers/town');
 
 module.exports = (app) => {
     app.get('/', homeController.index);
@@ -32,6 +33,9 @@ module.exports = (app) => {
 
     app.get('/category', categoryController.index);
     app.get('/category/:id', categoryController.category);
+
+    app.get('/town', townController.index);
+    app.get('/town/:id', townController.town);
 
 };
 
