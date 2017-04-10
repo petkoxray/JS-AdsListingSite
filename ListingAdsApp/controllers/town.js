@@ -9,7 +9,12 @@ module.exports= {
         let townId = req.params.id;
 
         Ad.find({town: townId}).populate('author category town').then(ads => {
-            res.render('home/index', {ads:ads});
+            let townName = '';
+
+            if (ads[0]) {
+                townName = ads[0].town.name;
+            }
+            res.render('town/index', {ads:ads, townName: townName});
         })
     }
 }

@@ -1,4 +1,11 @@
 <div class="container">
+    {{#if categoryName}}
+        <h2>All ads in Category {{categoryName}}</h2>
+    {{/if}}
+    {{#unless categoryName}}
+        <h1>Sorry,no Ads in this category</h1>
+    {{/unless}}
+    <br>
     <div class="row">
         {{#each ads}}
             <div class="col-sm-6 col-md-4">
