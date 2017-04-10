@@ -21,12 +21,9 @@
                     <label for="select" class="col-sm-4 control-label">Category</label>
                     <div class="col-sm-4">
                         <select class="form-control" id="adCategory" name="category">
-                            <option>Phones</option>
-                            <option>Laptops</option>
-                            <option>Computers</option>
-                            <option>Drones</option>
-                            <option>Cameras</option>
-                            <option>Tablets</option>
+                            {{#each categories }}
+                            <option>{{this.name}}</option>
+                            {{/each}}
                         </select>
                     </div>
                 </div>
@@ -34,14 +31,9 @@
                     <label for="select" class="col-sm-4 control-label">Town</label>
                     <div class="col-sm-4">
                         <select class="form-control" id="adTown" name="town" required>
-                            <option>Plovdiv</option>
-                            <option>Varna</option>
-                            <option>Burgas</option>
-                            <option>Sliven</option>
-                            <option>Stara Zagora</option>
-                            <option>Sofia</option>
-                            <option>Pernik</option>
-                            <option>Sliven</option>
+                            {{#each towns}}
+                                <option>{{this.name}}</option>
+                            {{/each}}
                         </select>
                     </div>
                 </div>
