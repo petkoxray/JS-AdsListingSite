@@ -39,6 +39,10 @@ module.exports = (app) => {
     app.get('/town/:id', townController.town);
 
     app.get('/admin', adminController.index);
+    app.get('/admin/ads', adminController.adsGet);
+    app.get('/admin/categories', adminController.categoriesGet);
+    app.get('/admin/towns', adminController.townsGet);
+    app.get('/admin/users', adminController.usersGet);
 
 };
 

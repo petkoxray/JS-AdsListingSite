@@ -1,0 +1,25 @@
+<div class="container">
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Category</th>
+            <th>Town</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#each ads}}
+            <tr>
+                <td>{{this.title}}</td>
+                <td>{{this.author.fullName}}</td>
+                <td>{{this.category.name}}</td>
+                <td>{{this.town.name}}</td>
+            </tr>
+        {{/each}}
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
