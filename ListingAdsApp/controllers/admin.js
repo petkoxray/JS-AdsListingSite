@@ -56,6 +56,15 @@ module.exports = {
         })
     },
 
+    categoriesPost: (req, res) => {
+        let categoryArgs = req.body;
+
+        Category.create(categoryArgs).then(cat => {
+            res.redirect('categories')
+        })
+
+    },
+
     townsGet: (req, res) => {
         if (!req.isAuthenticated()) {
             res.redirect('/');
