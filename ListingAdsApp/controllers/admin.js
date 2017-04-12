@@ -82,6 +82,15 @@ module.exports = {
         })
     },
 
+    townsPost: (req, res) => {
+        let townArgs = req.body;
+
+        Town.create(townArgs).then(town => {
+            res.redirect('towns')
+        })
+
+    },
+
     usersGet: (req, res) => {
         if (!req.isAuthenticated()) {
             res.redirect('/');

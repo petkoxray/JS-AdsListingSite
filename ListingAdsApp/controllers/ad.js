@@ -3,20 +3,13 @@ const Town = require('mongoose').model('Town');
 const Ad = require('mongoose').model('Ad');
 const randomString = require('randomstring');
 
-let categories = '';
-Category.find({}).then(c => {
-    categories = c;
-});
-
-let towns = '';
-Town.find({}).then(t => {
-    towns = t;
-});
-
-
 module.exports = {
     createGet: (req, res) => {
-        res.render('ad/create', {categories: categories, towns: towns});
+        Category.find({}).then(categories => {
+            Town.find({}).then(towns => {
+                res.render('ad/create', {categories: categories, towns: towns});
+            })
+        })
     },
 
     createPost: (req, res) => {

@@ -12,7 +12,7 @@ function initializeCategory(categoryName) {
 
 let categorySchema = mongoose.Schema (
     {
-        name: {type: String, required:true},
+        name: {type: String, required:true, unique: true},
         ads: [{type: ObjectId, ref: 'Ad'}]
     }
 );

@@ -12,7 +12,7 @@ function initializeTown(townName) {
 
 let townSchema = mongoose.Schema (
     {
-        name: {type: String, required:true},
+        name: {type: String, required:true, unique:true},
         ads: [{type: ObjectId, ref: 'Ad'}]
     }
 );
