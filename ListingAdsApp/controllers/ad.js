@@ -3,34 +3,40 @@ const Town = require('mongoose').model('Town');
 const Ad = require('mongoose').model('Ad');
 const randomString = require('randomstring');
 
+let towns = '';
+let categories = '';
+
 module.exports = {
     createGet: (req, res) => {
-        Category.find({}).then(categories => {
-            Town.find({}).then(towns => {
-                res.render('ad/create', {categories: categories, towns: towns});
+        Category.find({}).then(c => {
+            categories = c;
+            Town.find({}).then(t => {
+                towns = t;
+                res.render('ad/create', {categories: c, towns: t});
             })
         })
     },
 
     createPost: (req, res) => {
         let adArgs = req.body;
-
+        let regexPrice = /[0-9.,]/;
+        let regexPhone = /^0[89]{1}[0-9]{8}$/gm;
         let errorMsg = '';
 
         if (!req.isAuthenticated()) {
-            errorMsg = 'You should be logged in to create Ads!'
+            errorMsg = 'You should be logged in to create Ads!';
         } else if (!adArgs.title) {
-            errorMsg = 'Invalid title'
+            errorMsg = 'Invalid title';
         } else if (!adArgs.content) {
-            errorMsg = 'Invalid content'
-        } else if (!adArgs.phone) {
-            errorMsg = 'Invalid phone number'
-        } else if (!adArgs.price) {
-            errorMsg = 'Price should be valid'
+            errorMsg = 'Invalid content';
+        } else if (!adArgs.phone || !regexPhone.test(adArgs.phone)) {
+            errorMsg = 'Phone should be valid Bulgarian mobile number';
+        } else if (!adArgs.price || !regexPrice.test(adArgs.price)) {
+            errorMsg = 'Price should be valid';
         }
 
         if (errorMsg) {
-            res.render('ad/create', { error: errorMsg });
+            res.render('ad/create', { error: errorMsg, categories: categories, towns: towns });
             return;
         }
 
