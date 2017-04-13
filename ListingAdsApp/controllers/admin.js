@@ -51,13 +51,23 @@ module.exports = {
             }
 
             Category.find({}).sort({date: 'desc'}).populate('ads').then(categories => {
-                res.render('admin/categories', { categories: categories})
+                res.render('admin/categories', { categories: categories, error: req.session.error})
+                delete req.session.error;
             });
         })
     },
 
     categoriesPost: (req, res) => {
         let categoryArgs = req.body;
+        let regexCat = /[A-Z][a-z\s]+/;
+        let errMsg = '';
+
+        if (!categoryArgs.name || !regexCat.test(categoryArgs.name)) {
+            errMsg = 'Category name is invalid!';
+            req.session.error = errMsg;
+            res.redirect('categories');
+            return;
+        }
 
         Category.create(categoryArgs).then(cat => {
             res.redirect('categories')
@@ -77,16 +87,26 @@ module.exports = {
             }
 
             Town.find({}).sort({date: 'desc'}).populate('ads').then(towns => {
-                res.render('admin/towns', { towns: towns})
+                res.render('admin/towns', { towns: towns, error: req.session.error});
+                delete req.session.error;
             });
         })
     },
 
     townsPost: (req, res) => {
         let townArgs = req.body;
+        let regexTown = /[A-Z][a-z\s]+/;
+        let errMsg = '';
+
+        if (!townArgs.name || !regexTown.test(townArgs.name)) {
+            errMsg = 'Town name is invalid!';
+            req.session.error = errMsg;
+            res.redirect('towns');
+            return;
+        }
 
         Town.create(townArgs).then(town => {
-            res.redirect('towns')
+            res.redirect('towns');
         })
 
     },
