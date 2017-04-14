@@ -20,7 +20,7 @@ module.exports = {
     createPost: (req, res) => {
         let adArgs = req.body;
         let regexPrice = /[0-9.,]/;
-        let regexPhone = /^0[89]{1}[0-9]{8}$/gm;
+        let regexPhone = /^0[89]{1}[0-9]{8}$/;
         let errorMsg = '';
 
         if (!req.isAuthenticated()) {
@@ -124,6 +124,8 @@ module.exports = {
     editPost: (req, res) => {
         let id = req.params.id;
         let adArgs = req.body;
+        let regexPrice = /[0-9.,]/;
+        let regexPhone = /^0[89]{1}[0-9]{8}$/;
         let errorMsg = '';
 
 
@@ -131,9 +133,9 @@ module.exports = {
             errorMsg = 'Ad title cannot be empty!'
         } else if (!adArgs.content) {
           errorMsg = 'Ad content cannot be empty!'
-        } else if (!adArgs.phone) {
+        } else if (!adArgs.phone || !regexPhone.test(adArgs.phone)) {
             errorMsg = 'Phone must be valid'
-        } else if (!adArgs.price) {
+        } else if (!adArgs.price || !regexPrice.test(adArgs.price)) {
             errorMsg = 'Price must be valid'
         }
 
