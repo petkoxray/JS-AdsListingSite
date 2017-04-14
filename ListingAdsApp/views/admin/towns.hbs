@@ -10,8 +10,9 @@
     <table class="table table-bordered">
         <thead>
         <tr>
-            <th>Category</th>
+            <th>Town</th>
             <th>Ads Count</th>
+            <th>Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -19,11 +20,13 @@
             <tr>
                 <td>{{this.name}}</td>
                 <td>{{this.ads.length}}</td>
+                <td>
+                    <a href="">Edit</a> /
+                    <a href="/admin/town-delete/{{this.id}}">Delete</a> /
+                    <a href="">Update</a>
+                </td>
             </tr>
         {{/each}}
         </tbody>
     </table>
 </div>
-
-</body>
-</html>

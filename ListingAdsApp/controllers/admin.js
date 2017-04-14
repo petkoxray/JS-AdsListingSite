@@ -111,6 +111,54 @@ module.exports = {
 
     },
 
+    townDeleteGet: (req , res) => {
+        if (!req.isAuthenticated()) {
+            res.redirect('/');
+            return;
+        }
+        req.user.isInRole('Admin').then(isAdmin => {
+            if (!isAdmin) {
+                res.redirect('/');
+                return;
+            }
+
+            let id = req.params.id;
+
+            Town.findOne({_id: id}).populate('ads').then(town => {
+                res.render('admin/town-delete', { town: town});
+            });
+        })
+    },
+
+    townDeletePost: (req, res) => {
+        let id = req.params.id;
+        Town.findByIdAndRemove(id).populate('ads').then(town => {
+            let ads = town.ads;
+            if (ads.length !== 0) {
+                ads.forEach(ad => {
+                    Ad.findByIdAndRemove(ad.id).populate('author category').then(ad => {
+                        let author = ad.author;
+                        let category = ad.category;
+                        let authorIndex = author.ads.indexOf(ad.id);
+                        let categoryIndex = category.ads.indexOf(ad.id);
+
+                        category.ads.splice(categoryIndex,1);
+                        category.save(err => {
+                            if (err) console.log(err);
+                        });
+                        author.ads.splice(authorIndex, 1);
+                        author.save().then(() => {
+                            res.redirect('/admin/towns');
+                        })
+                    })
+                });
+            } else {
+                res.redirect('/admin/towns');
+            }
+        })
+
+    },
+
     usersGet: (req, res) => {
         if (!req.isAuthenticated()) {
             res.redirect('/');
