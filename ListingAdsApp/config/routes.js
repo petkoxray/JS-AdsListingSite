@@ -43,6 +43,8 @@ module.exports = (app) => {
 
     app.get('/admin/categories', adminController.categoriesGet);
     app.post('/admin/categories', adminController.categoriesPost);
+    app.get('/admin/category-delete/:id', adminController.categoryDeleteGet);
+    app.post('/admin/category-delete/:id', adminController.categoryDeletePost);
 
     app.get('/admin/towns', adminController.townsGet);
     app.post('/admin/towns', adminController.townsPost);

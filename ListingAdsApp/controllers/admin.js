@@ -75,6 +75,44 @@ module.exports = {
 
     },
 
+    categoryDeleteGet: (req ,res) => {
+       let id = req.params.id;
+
+       Category.findOne({_id: id}).populate('ads').then(category => {
+           res.render('admin/category-delete', {category: category})
+       })
+    },
+
+    categoryDeletePost: (req, res) => {
+        let id = req.params.id;
+        Category.findByIdAndRemove(id).populate('ads').then(category => {
+            let ads = category.ads;
+            if (ads.length !== 0) {
+                ads.forEach(ad => {
+                    Ad.findByIdAndRemove(ad.id).populate('author town').then(ad => {
+                        let author = ad.author;
+                        let town = ad.town;
+                        let authorIndex = author.ads.indexOf(ad.id);
+                        let townIndex = town.ads.indexOf(ad.id);
+
+                        town.ads.splice(townIndex,1);
+                        town.save(err => {
+                            if (err) console.log(err);
+                        });
+                        author.ads.splice(authorIndex, 1);
+                        author.save().then(() => {
+                            res.redirect('/admin/categories');
+                        })
+                    })
+                });
+            } else {
+                res.redirect('/admin/categories');
+            }
+        })
+
+    },
+
+
     townsGet: (req, res) => {
         if (!req.isAuthenticated()) {
             res.redirect('/');

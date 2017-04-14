@@ -14,6 +14,7 @@
         <tr>
             <th>Category</th>
             <th>Ads Count</th>
+            <th>CRUD</th>
         </tr>
         </thead>
         <tbody>
@@ -21,6 +22,11 @@
             <tr>
                 <td>{{this.name}}</td>
                 <td>{{this.ads.length}}</td>
+                <td>
+                    <a href="">Edit</a> /
+                    <a href="/admin/category-delete/{{this.id}}">Delete</a> /
+                    <a href="">Update</a>
+                </td>
             </tr>
         {{/each}}
         </tbody>
