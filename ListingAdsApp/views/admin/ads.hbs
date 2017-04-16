@@ -6,20 +6,22 @@
             <th>Author</th>
             <th>Category</th>
             <th>Town</th>
+            <th>Action</th>
         </tr>
         </thead>
         <tbody>
         {{#each ads}}
             <tr>
-                <td>{{this.title}}</td>
+                <td><a href="/ad/details/{{this.id}}">{{this.title}}</a></td>
                 <td>{{this.author.fullName}}</td>
-                <td>{{this.category.name}}</td>
-                <td>{{this.town.name}}</td>
+                <td><a href="/category/{{this.category.id}}">{{this.category.name}}</a></td>
+                <td><a href="/town/{{this.town.id}}">{{this.town.name}}</a></td>
+                <td>
+                    <a href="/ad/edit/{{this.id}}"><button type="submit" class="btn btn-primary btn-xs">Edit</button></a>
+                    <a href="/ad/delete/{{this.id}}"><button type="submit" class="btn btn-danger btn-xs">Delete</button></a>
+                </td>
             </tr>
         {{/each}}
         </tbody>
     </table>
 </div>
-
-</body>
-</html>

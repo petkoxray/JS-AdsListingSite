@@ -1,6 +1,6 @@
 const userController = require('./../controllers/user');
 const homeController = require('./../controllers/home');
-const adController = require('./../controllers/ad')
+const adController = require('./../controllers/ad');
 const categoryController = require('./../controllers/category');
 const townController = require('./../controllers/town');
 const adminController = require('./../controllers/admin');
@@ -52,6 +52,7 @@ module.exports = (app) => {
     app.post('/admin/town-delete/:id', adminController.townDeletePost);
 
     app.get('/admin/users', adminController.usersGet);
+    app.get('/user/ads/:id', adminController.userAdsGet);
     app.get('/admin/user-delete/:id',adminController.userDeleteGet);
     app.post('/admin/user-delete/:id',adminController.userDeletePost);
 

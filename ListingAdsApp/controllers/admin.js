@@ -52,7 +52,7 @@ module.exports = {
             }
 
             Category.find({}).sort({date: 'desc'}).populate('ads').then(categories => {
-                res.render('admin/categories', { categories: categories, error: req.session.error})
+                res.render('admin/categories', { categories: categories, error: req.session.error});
                 delete req.session.error;
             });
         })
@@ -268,6 +268,26 @@ module.exports = {
                 res.redirect('/admin/users');
             }
 
+        })
+    },
+
+    userAdsGet: (req, res) => {
+        if (!req.isAuthenticated()) {
+            res.redirect('/');
+            return;
+        }
+        req.user.isInRole('Admin').then(isAdmin => {
+            if (!isAdmin) {
+                res.redirect('/');
+                return;
+            }
+
+            let id = req.params.id;
+
+            User.findOne({_id: id}).populate('ads').then(u => {
+                let ads = u.ads;
+                res.render('user/ads', {ads: ads})
+            });
         })
     }
 };

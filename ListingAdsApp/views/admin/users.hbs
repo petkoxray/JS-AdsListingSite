@@ -10,8 +10,8 @@
         <tbody>
         {{#each users}}
             <tr>
-                <td>{{this.fullName}}</td>
-                <td>{{this.ads.length}}</td>
+                <td><a href="/user/ads/{{this.id}}">{{this.fullName}}</a></td>
+                <td><a href="/user/ads/{{this.id}}">{{this.ads.length}}</a></td>
                 <td>
                     <a href=""><button type="submit" class="btn btn-primary btn-xs">Edit</button></a>
                     <a href="/admin/user-delete/{{this.id}}"><button type="submit" class="btn btn-danger btn-xs">Delete</button></a>
@@ -21,6 +21,3 @@
         </tbody>
     </table>
 </div>
-
-</body>
-</html>

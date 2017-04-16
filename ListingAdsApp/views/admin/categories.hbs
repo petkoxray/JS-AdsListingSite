@@ -21,7 +21,7 @@
         {{#each categories}}
             <tr>
                 <td>{{this.name}}</td>
-                <td>{{this.ads.length}}</td>
+                <td><a href="/category/{{this.id}}">{{this.ads.length}}</a></td>
                 <td>
                     <a href=""><button type="submit" class="btn-xs btn-primary btn">Edit</button></a>
                     <a href="/admin/category-delete/{{this.id}}"><button type="submit" class="btn btn-danger btn-xs">Delete</button></a>
