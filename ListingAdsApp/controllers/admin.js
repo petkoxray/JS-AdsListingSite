@@ -3,6 +3,7 @@ const Ad = mongoose.model('Ad');
 const Category = mongoose.model('Category');
 const Town = mongoose.model('Town');
 const User = mongoose.model('User');
+const Role = mongoose.model('Role');
 
 module.exports = {
     index: (req, res) => {
@@ -209,8 +210,64 @@ module.exports = {
             }
 
             User.find({}).sort({date: 'desc'}).populate('ads').then(users => {
-                res.render('admin/users', { users: users})
+                res.render('admin/users', { users: users});
             });
         })
     },
+
+    userDeleteGet: (req, res) => {
+        if (!req.isAuthenticated()) {
+            res.redirect('/');
+            return;
+        }
+        req.user.isInRole('Admin').then(isAdmin => {
+            if (!isAdmin) {
+                res.redirect('/');
+                return;
+            }
+
+            User.findOne({_id: req.params.id}).populate('ads').then(user => {
+                res.render('admin/user-delete', { user: user});
+            });
+        })
+    },
+
+    userDeletePost: (req, res) => {
+        let id = req.params.id;
+        User.findByIdAndRemove(id).populate('ads roles').then(user => {
+            let roles = user.roles;
+            roles.forEach(role => {
+                let roleIndex = role.users.indexOf(user.id);
+                role.users.splice(roleIndex,1);
+                role.save(err => {
+                    if(err) {
+                        console.log(err);
+                    }
+                });
+            });
+            let ads = user.ads;
+            if (ads.length !== 0) {
+                ads.forEach(ad => {
+                    Ad.findByIdAndRemove(ad.id).populate('category town').then(ad => {
+                        let town = ad.town;
+                        let category = ad.category;
+                        let townIndex = town.ads.indexOf(ad.id);
+                        let categoryIndex = category.ads.indexOf(ad.id);
+
+                        category.ads.splice(categoryIndex,1);
+                        category.save(err => {
+                            if (err) console.log(err);
+                        });
+                        town.ads.splice(townIndex, 1);
+                        town.save().then(() => {
+                            res.redirect('/admin/users');
+                        })
+                    })
+                })
+            } else {
+                res.redirect('/admin/users');
+            }
+
+        })
+    }
 };

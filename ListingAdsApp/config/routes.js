@@ -52,6 +52,8 @@ module.exports = (app) => {
     app.post('/admin/town-delete/:id', adminController.townDeletePost);
 
     app.get('/admin/users', adminController.usersGet);
+    app.get('/admin/user-delete/:id',adminController.userDeleteGet);
+    app.post('/admin/user-delete/:id',adminController.userDeletePost);
 
 };
 

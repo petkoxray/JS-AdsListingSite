@@ -21,9 +21,8 @@
                 <td>{{this.name}}</td>
                 <td>{{this.ads.length}}</td>
                 <td>
-                    <a href="">Edit</a> /
-                    <a href="/admin/town-delete/{{this.id}}">Delete</a> /
-                    <a href="">Update</a>
+                    <a href=""><button type="submit" class="btn btn-primary btn-xs">Edit</button></a>
+                    <a href="/admin/town-delete/{{this.id}}"><button type="submit" class="btn btn-danger btn-xs">Delete</button></a>
                 </td>
             </tr>
         {{/each}}
