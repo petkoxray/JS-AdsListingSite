@@ -8,7 +8,7 @@ const Role = mongoose.model('Role');
 module.exports = {
     index: (req, res) => {
         if (!req.isAuthenticated()) {
-            res.redirect('/');
+            res.redirect('/user/login');
             return;
         }
         req.user.isInRole('Admin').then(isAdmin => {
@@ -22,7 +22,7 @@ module.exports = {
 
     adsGet: (req, res) => {
         if (!req.isAuthenticated()) {
-            res.redirect('/');
+            res.redirect('/user/login');
             return;
         }
         req.user.isInRole('Admin').then(isAdmin => {
@@ -42,7 +42,7 @@ module.exports = {
 
     categoriesGet: (req, res) => {
         if (!req.isAuthenticated()) {
-            res.redirect('/');
+            res.redirect('/user/login');
             return;
         }
         req.user.isInRole('Admin').then(isAdmin => {
@@ -59,21 +59,32 @@ module.exports = {
     },
 
     categoriesPost: (req, res) => {
-        let categoryArgs = req.body;
-        let regexCat = /[A-Z][a-z\s]+/;
-        let errMsg = '';
-
-        if (!categoryArgs.name || !regexCat.test(categoryArgs.name)) {
-            errMsg = 'Category name is invalid!';
-            req.session.error = errMsg;
-            res.redirect('categories');
+        if (!req.isAuthenticated()) {
+            res.redirect('/user/login');
             return;
         }
 
-        Category.create(categoryArgs).then(cat => {
-            res.redirect('categories')
-        })
+        req.user.isInRole('Admin').then(isAdmin => {
+            if (isAdmin) {
+                let categoryArgs = req.body;
+                let regexCat = /[A-Z][a-z\s]+/;
+                let errMsg = '';
 
+                if (!categoryArgs.name || !regexCat.test(categoryArgs.name)) {
+                    errMsg = 'Category name is invalid!';
+                    req.session.error = errMsg;
+                    res.redirect('categories');
+                    return;
+                }
+
+                Category.create(categoryArgs).then(cat => {
+                    res.redirect('categories')
+                });
+                return;
+            }
+
+            res.redirect('/');
+        });
     },
 
     categoryDeleteGet: (req ,res) => {

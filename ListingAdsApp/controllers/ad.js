@@ -122,33 +122,46 @@ module.exports = {
     },
 
     editPost: (req, res) => {
+        if (!req.isAuthenticated()) {
+            res.redirect('/user/login');
+            return;
+        }
+
         let id = req.params.id;
-        let adArgs = req.body;
-        let regexPrice = /[0-9.,]/;
-        let regexPhone = /^0[89]{1}[0-9]{8}$/;
-        let errorMsg = '';
 
+        Ad.findById(id).populate('author').then(ad => {
+            req.user.isInRole('Admin').then(isAdmin => {
+                if (isAdmin || req.user.isAuthor(ad)) {
+                    let adArgs = req.body;
+                    let regexPrice = /[0-9.,]/;
+                    let regexPhone = /^0[89]{1}[0-9]{8}$/;
+                    let errorMsg = '';
 
-        if (!adArgs.title) {
-            errorMsg = 'Ad title cannot be empty!'
-        } else if (!adArgs.content) {
-          errorMsg = 'Ad content cannot be empty!'
-        } else if (!adArgs.phone || !regexPhone.test(adArgs.phone)) {
-            errorMsg = 'Phone must be valid'
-        } else if (!adArgs.price || !regexPrice.test(adArgs.price)) {
-            errorMsg = 'Price must be valid'
-        }
+                    if (!adArgs.title) {
+                        errorMsg = 'Ad title cannot be empty!'
+                    } else if (!adArgs.content) {
+                        errorMsg = 'Ad content cannot be empty!'
+                    } else if (!adArgs.phone || !regexPhone.test(adArgs.phone)) {
+                        errorMsg = 'Phone must be valid'
+                    } else if (!adArgs.price || !regexPrice.test(adArgs.price)) {
+                        errorMsg = 'Price must be valid'
+                    }
 
-        if (errorMsg) {
-            res.render('ad/edit', {error: errorMsg})
-        } else {
-            Ad.update({_id: id},
-                {$set:
-                    {title: adArgs.title, price: adArgs.price, content: adArgs.content, phone: adArgs.phone}})
-                .then(updateStatus => {
-                    res.redirect(`/ad/details/${id}`)
-                })
-        }
+                    if (errorMsg) {
+                        res.render('ad/edit', {error: errorMsg})
+                    } else {
+                        Ad.update({_id: id},
+                            {$set:
+                                {title: adArgs.title, price: adArgs.price, content: adArgs.content, phone: adArgs.phone}})
+                            .then(updateStatus => {
+                                res.redirect(`/ad/details/${id}`)
+                            })
+                    }
+                    return;
+                }
+                res.redirect('/');
+            });
+        });
     },
 
     deleteGet: (req , res) => {
@@ -167,48 +180,64 @@ module.exports = {
                 }
                 res.redirect('/');
             });
-        })
+        });
     },
 
     deletePost: (req, res) => {
+        if (!req.isAuthenticated()) {
+            res.redirect('/');
+            return;
+        }
+
         let id = req.params.id;
+        Ad.findById(id).populate('author').then(ad => {
+            req.user.isInRole('Admin').then(isAdmin => {
+                if (isAdmin || req.user.isAuthor(ad)) {
+                    Ad.findByIdAndRemove(id).populate('author category town').then(ad => {
+                        let author = ad.author;
+                        let category = ad.category;
+                        let town = ad.town;
+                        let authorIndex = author.ads.indexOf(ad.id);
+                        let categoryIndex = category.ads.indexOf(ad.id);
+                        let townIndex = town.ads.indexOf(ad.id);
+                        let errMsg = '';
 
-        Ad.findByIdAndRemove(id).populate('author category town').then(ad => {
-            let author = ad.author;
-            let category = ad.category;
-            let town = ad.town;
-            let authorIndex = author.ads.indexOf(ad.id);
-            let categoryIndex = category.ads.indexOf(ad.id);
-            let townIndex = town.ads.indexOf(ad.id);
-            let errMsg = '';
-
-            if (authorIndex < 0) {
-                errMsg = 'Ad was not found for author';
-                res.render('ad/delete', {error: errMsg})
-            } else if (townIndex < 0) {
-                errMsg = 'Ad was not found for town';
-                res.render('ad/delete', {error: errMsg})
-            } else if (categoryIndex < 0) {
-                errMsg = 'Ad was not found for category';
-                res.render('ad/delete', {error: errMsg})
-            } else {
-                category.ads.splice(categoryIndex,1);
-                category.save(err => {
-                    if (err) console.log(err);
-                });
-                town.ads.splice(townIndex,1);
-                town.save(err => {
-                    if (err) console.log(err);
-                });
-                author.ads.splice(authorIndex, 1);
-                author.save().then(() => {
-                    res.redirect('/');
-                })
-            }
-        })
+                        if (authorIndex < 0) {
+                            errMsg = 'Ad was not found for author';
+                            res.render('ad/delete', {error: errMsg})
+                        } else if (townIndex < 0) {
+                            errMsg = 'Ad was not found for town';
+                            res.render('ad/delete', {error: errMsg})
+                        } else if (categoryIndex < 0) {
+                            errMsg = 'Ad was not found for category';
+                            res.render('ad/delete', {error: errMsg})
+                        } else {
+                            category.ads.splice(categoryIndex,1);
+                            category.save(err => {
+                                if (err) console.log(err);
+                            });
+                            town.ads.splice(townIndex,1);
+                            town.save(err => {
+                                if (err) console.log(err);
+                            });
+                            author.ads.splice(authorIndex, 1);
+                            author.save().then(() => {
+                                res.redirect('/');
+                            })
+                        }
+                    });
+                    return;
+                }
+                res.redirect('/');
+            });
+        });
     },
 
 }
+
+
+
+
 
 
 
