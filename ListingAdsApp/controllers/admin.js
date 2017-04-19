@@ -127,7 +127,7 @@ module.exports = {
 
     townsGet: (req, res) => {
         if (!req.isAuthenticated()) {
-            res.redirect('/');
+            res.redirect('/user/login');
             return;
         }
         req.user.isInRole('Admin').then(isAdmin => {

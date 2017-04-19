@@ -112,7 +112,8 @@ module.exports = {
         Ad.findById(id).populate('author category town').then( ad => {
             req.user.isInRole('Admin').then(isAdmin => {
                 if (isAdmin || req.user.isAuthor(ad)) {
-                    res.render('ad/edit', ad);
+                    res.render('ad/edit', {ad:ad , error: req.session.error});
+                    delete req.session.error;
                     return;
                 }
 
@@ -148,13 +149,14 @@ module.exports = {
                     }
 
                     if (errorMsg) {
-                        res.render('ad/edit', {error: errorMsg})
+                        req.session.error = errorMsg;
+                        res.redirect(`/ad/edit/${id}`);
                     } else {
                         Ad.update({_id: id},
                             {$set:
                                 {title: adArgs.title, price: adArgs.price, content: adArgs.content, phone: adArgs.phone}})
                             .then(updateStatus => {
-                                res.redirect(`/ad/details/${id}`)
+                                res.redirect(`/ad/details/${id}`);
                             })
                     }
                     return;
@@ -232,8 +234,10 @@ module.exports = {
             });
         });
     },
-
 }
+
+
+
 
 
 

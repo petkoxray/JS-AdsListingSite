@@ -1,20 +1,20 @@
 <div class="container body-content span=8 offset=2">
     <div class="well">
-        <form class="form-horizontal" method="POST" action="/ad/edit/{{id}}">
+        <form class="form-horizontal" method="POST" action="/ad/edit/{{ad.id}}">
             <fieldset>
                 <legend>Edit Ad</legend>
 
                 <div class="form-group">
                     <label class="col-sm-4 control-label" for="adTitle">Title</label>
                     <div class="col-sm-4 ">
-                        <input type="text" class="form-control" id="adTitle" placeholder="Ad Title" value="{{title}}" name="title" required >
+                        <input type="text" class="form-control" id="adTitle" placeholder="Ad Title" value="{{ad.title}}" name="title" required >
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="col-sm-4 control-label" for="adPrice">Price</label>
                     <div class="col-sm-4 ">
-                        <input type="text" class="form-control" id="adPrice" placeholder="Ad Price" value="{{price}}" name="price" required >
+                        <input type="text" class="form-control" id="adPrice" placeholder="Ad Price" value="{{ad.price}}" name="price" required >
                     </div>
                 </div>
 
@@ -22,7 +22,7 @@
                     <label for="select" class="col-sm-4 control-label">Category</label>
                     <div class="col-sm-4">
                         <select class="form-control" id="adCategory" name="category" disabled>
-                            <option>{{category.name}}</option>
+                            <option>{{ad.category.name}}</option>
                         </select>
                     </div>
                 </div>
@@ -31,7 +31,7 @@
                     <label for="select" class="col-sm-4 control-label">Town</label>
                     <div class="col-sm-4">
                         <select class="form-control" id="adTown" name="town" disabled>
-                            <option>{{town.name}}</option>
+                            <option>{{ad.town.name}}</option>
                         </select>
                     </div>
                 </div>
@@ -39,14 +39,14 @@
                 <div class="form-group">
                     <label class="col-sm-4 control-label" for="adPhone">Phone</label>
                     <div class="col-sm-4 ">
-                        <input type="text" class="form-control" id="adPhone" placeholder="Ad Phone" value="{{phone}}" name="phone" required >
+                        <input type="text" class="form-control" id="adPhone" placeholder="Ad Phone" value="{{ad.phone}}" name="phone" required >
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="col-sm-4 control-label" for="adContent">Content</label>
                     <div class="col-sm-6">
-                        <textarea class="form-control" id="articleContent" rows="5" name="content" required>{{content}}</textarea>
+                        <textarea class="form-control" id="articleContent" rows="5" name="content" required>{{ad.content}}</textarea>
                     </div>
                 </div>
 
@@ -54,7 +54,7 @@
                     <div class="col-sm-4 col-sm-offset-4">
                         <a href="/" class="btn btn-default">Cancel</a>
 
-                        <button type="submit" href="/ad/edit/{{id}}" class="btn btn-success">Edit</button>
+                        <button type="submit" href="/ad/edit/{{ad.id}}" class="btn btn-success">Edit</button>
                     </div>
                 </div>
             </fieldset>
