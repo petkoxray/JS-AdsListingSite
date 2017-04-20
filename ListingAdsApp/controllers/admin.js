@@ -175,7 +175,8 @@ module.exports = {
             let id = req.params.id;
 
             Town.findOne({_id: id}).populate('ads').then(town => {
-                res.render('admin/town-delete', { town: town});
+                let ads = town.ads;
+                res.render('admin/town-delete', { town: town, ads: ads});
             });
         })
     },

@@ -1,6 +1,7 @@
-<h1> {{town.name}}</h1>
-<h2> haha</h2>
-
+<h3> Are you sure that you want to delete town <strong>{{town.name}}</strong> and all corresponding ads in it ?</h3>
+{{#each ads}}
+    <p>{{title}}</p>
+{{/each}}
 <form class="form-horizontal" method="POST" action="/admin/town-delete/{{town.id}}">
     <button type="submit" class="btn btn-danger">Delete</button>
 </form>
