@@ -22,6 +22,9 @@ module.exports = (app) => {
     app.get('/user/myads', userController.myAdsGet);
     app.get('/user/ads/:id', userController.userAdsGet);
 
+    app.get('/ad', adController.indexGet);
+    app.post('/ad/:word', adController.indexPost);
+
     app.get('/ad/create', adController.createGet);
     app.post('/ad/create', adController.createPost);
 

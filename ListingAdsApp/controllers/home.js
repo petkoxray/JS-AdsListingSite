@@ -7,7 +7,7 @@ module.exports = {
           ads.forEach(ads => {
               ads.content = ads.content.substr(0, 40) + '...';
           });
-          res.render('home/index', { ads: ads})
-      })
+          res.render('home/index', { ads: ads});
+      });
   }
 };
