@@ -89,7 +89,7 @@ module.exports = {
     detailsGet: (req, res) => {
         let id = req.params.id;
 
-        Ad.findById(id).populate('author').then( ad => {
+        Ad.findById(id).populate('author category town').then( ad => {
             if (!req.user) {
                 res.render('ad/details', {ad: ad, isUserAuthorized: false});
                 return;

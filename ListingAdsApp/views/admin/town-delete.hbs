@@ -1,8 +1,33 @@
 <h3> Are you sure that you want to delete town <strong>{{town.name}}</strong> and all corresponding ads in it ?</h3>
-{{#each ads}}
-    <p>{{title}}</p>
-{{/each}}
 <form class="form-horizontal" method="POST" action="/admin/town-delete/{{town.id}}">
     <button type="submit" class="btn btn-danger">Delete</button>
 </form>
+<br>
+<div class="container">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Category</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#each ads}}
+            <tr>
+                <td><a href="/ad/details/{{id}}">{{title}}</a></td>
+                <td>{{author.fullName}}</td>
+                <td><a href="/category/{{category.id}}">{{category.name}}</a></td>
+                <td><a href="/town/{{town.id}}">{{town.name}}</a></td>
+                <td>
+                    <a href="/ad/edit/{{id}}"><button type="submit" class="btn btn-primary btn-xs">Edit</button></a>
+                    <a href="/ad/delete/{{id}}"><button type="submit" class="btn btn-danger btn-xs">Delete</button></a>
+                </td>
+            </tr>
+        {{/each}}
+        </tbody>
+    </table>
+</div>
+
 

@@ -19,7 +19,7 @@
         {{#each towns}}
             <tr>
                 <td>{{this.name}}</td>
-                <td><a href="/town/{{this.id}}">{{this.ads.length}}</a></td>
+                <td><a href="/town/{{this.id}}"><span class="badge">{{this.ads.length}}</span></a></td>
                 <td>
                     <a href=""><button type="submit" class="btn btn-primary btn-xs">Edit</button></a>
                     <a href="/admin/town-delete/{{this.id}}"><button type="submit" class="btn btn-danger btn-xs">Delete</button></a>

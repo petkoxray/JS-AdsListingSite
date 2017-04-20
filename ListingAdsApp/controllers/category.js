@@ -11,6 +11,11 @@ module.exports = {
           if(ads[0]) {
               categoryName = ads[0].category.name;
           }
+
+          ads.forEach(ads => {
+              ads.content = ads.content.substr(0, 40) + '...';
+          });
+
           res.render('category/index', {ads: ads, categoryName: categoryName})
       })
     }

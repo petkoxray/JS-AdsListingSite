@@ -41,8 +41,19 @@ userSchema.method ({
 
             let isInRole = this.roles.indexOf(role.id) !== -1;
             return isInRole;
-        })
-    }
+        });
+    },
+    isAdmin: function () {
+        return Role.find({name: 'Admin'}).then(role => {
+            if (!role) {
+                return false;
+            }
+
+            let isInRole = this.roles.indexOf(role.id) !== -1;
+            return isInRole;
+        });
+    },
+
 });
 
 const User = mongoose.model('User', userSchema);

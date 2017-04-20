@@ -97,8 +97,9 @@ module.exports = {
             return;
         }
 
-        let user = req.user;
-        res.render('user/details', {user: user})
+        req.user.isInRole('Admin').then(isAdmin => {
+            res.render('user/details', {user: req.user, isAdmin: isAdmin});
+        });
     },
 
     detailsPost: (req , res) => {
@@ -121,9 +122,11 @@ module.exports = {
             return;
         }
 
-        User.findOne({_id: req.user.id}).populate('ads').then(u => {
-            let ads = u.ads;
-            res.render('user/ads', {ads: ads})
+        Ad.find({author: req.user.id}).populate('ads category town').then(ads => {
+            ads.forEach(ads => {
+                ads.content = ads.content.substr(0, 40) + '...';
+            });
+            res.render('user/myads', {ads: ads})
         })
     }
 

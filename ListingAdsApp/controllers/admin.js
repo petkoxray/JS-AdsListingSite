@@ -296,7 +296,7 @@ module.exports = {
 
             let id = req.params.id;
 
-            User.findOne({_id: id}).populate('ads').then(u => {
+            User.findOne({_id: id}).populate('ads category town').then(u => {
                 let ads = u.ads;
                 res.render('user/ads', {ads: ads})
             });
