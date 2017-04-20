@@ -282,24 +282,4 @@ module.exports = {
 
         })
     },
-
-    userAdsGet: (req, res) => {
-        if (!req.isAuthenticated()) {
-            res.redirect('/');
-            return;
-        }
-        req.user.isInRole('Admin').then(isAdmin => {
-            if (!isAdmin) {
-                res.redirect('/');
-                return;
-            }
-
-            let id = req.params.id;
-
-            User.findOne({_id: id}).populate('ads category town').then(u => {
-                let ads = u.ads;
-                res.render('user/ads', {ads: ads})
-            });
-        })
-    }
 };

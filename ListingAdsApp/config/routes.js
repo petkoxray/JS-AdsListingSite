@@ -20,6 +20,7 @@ module.exports = (app) => {
     app.post('/user/details', userController.detailsPost);
 
     app.get('/user/myads', userController.myAdsGet);
+    app.get('/user/ads/:id', userController.userAdsGet);
 
     app.get('/ad/create', adController.createGet);
     app.post('/ad/create', adController.createPost);
@@ -52,7 +53,6 @@ module.exports = (app) => {
     app.post('/admin/town-delete/:id', adminController.townDeletePost);
 
     app.get('/admin/users', adminController.usersGet);
-    app.get('/user/ads/:id', adminController.userAdsGet);
     app.get('/admin/user-delete/:id',adminController.userDeleteGet);
     app.post('/admin/user-delete/:id',adminController.userDeletePost);
 

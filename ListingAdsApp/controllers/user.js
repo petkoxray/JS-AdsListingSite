@@ -82,8 +82,8 @@ module.exports = {
                 }
 
                 res.redirect('/');
-            })
-        })
+            });
+        });
     },
 
     logout: (req, res) => {
@@ -113,7 +113,7 @@ module.exports = {
         User.update({_id: id},{$set: {fullName: userArgs.fullName}})
             .then(updateStatus => {
                 res.redirect('/user/details/')
-            })
+            });
     },
 
     myAdsGet: (req, res) => {
@@ -122,12 +122,23 @@ module.exports = {
             return;
         }
 
-        Ad.find({author: req.user.id}).populate('ads category town').then(ads => {
+        Ad.find({author: req.user.id}).populate('author category town').then(ads => {
             ads.forEach(ads => {
                 ads.content = ads.content.substr(0, 40) + '...';
             });
             res.render('user/myads', {ads: ads})
-        })
+        });
+    },
+
+    userAdsGet: (req, res) => {
+        let id = req.params.id;
+
+        Ad.find({author: id}).populate('author category town').then(ads => {
+            ads.forEach(ads => {
+                ads.content = ads.content.substr(0, 40) + '...';
+            });
+            res.render('user/ads', {ads: ads})
+        });
     }
 
 };
