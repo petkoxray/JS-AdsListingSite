@@ -16,7 +16,39 @@ module.exports = {
         });
     },
     indexPost: (req, res) => {
-
+        let filter = req.body.option;
+        let search = req.body.search;
+        if (filter === 'town') {
+            Town.findOne({name: search})
+                .populate({path: 'ads', populate: {path: 'author category town'}})
+                .then(town => {
+                    if (town) {
+                        let ads = town.ads;
+                        if (ads.length > 0) {
+                            res.render('ad/index', {ads: ads});
+                        } else {
+                            res.render('ad/index', {error: `Sorry we didnt find ads in ${town.name}`})
+                        }
+                    } else {
+                        res.render('ad/index', {error: 'Sorry we didnt find ads that much your search'})
+                    }
+                });
+        } else {
+            Category.findOne({name: search})
+                .populate({path: 'ads', populate: {path: 'author category town'}})
+                .then(category => {
+                    if (category) {
+                        let ads = category.ads;
+                        if (ads.length > 0) {
+                            res.render('ad/index', {ads: ads});
+                        } else {
+                            res.render('ad/index', {error: `Sorry we didnt find ads in ${category.name} category`})
+                        }
+                    } else {
+                        res.render('ad/index', {error: 'Sorry we didnt find ads that much your search'})
+                    }
+                });
+        }
     },
 
     createGet: (req, res) => {
@@ -31,7 +63,7 @@ module.exports = {
 
     createPost: (req, res) => {
         let adArgs = req.body;
-        let regexPrice = /[0-9.,]/;
+        let regexPrice = /^[0-9.,]+$/;
         let regexPhone = /^0[89]{1}[0-9]{8}$/;
         let errorMsg = '';
 
@@ -146,7 +178,7 @@ module.exports = {
             req.user.isInRole('Admin').then(isAdmin => {
                 if (isAdmin || req.user.isAuthor(ad)) {
                     let adArgs = req.body;
-                    let regexPrice = /[0-9.,]/;
+                    let regexPrice = /^[0-9.,]+$/;
                     let regexPhone = /^0[89]{1}[0-9]{8}$/;
                     let errorMsg = '';
 
