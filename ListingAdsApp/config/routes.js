@@ -23,7 +23,7 @@ module.exports = (app) => {
     app.get('/user/ads/:id', userController.userAdsGet);
 
     app.get('/ad', adController.indexGet);
-    app.post('/ad/:word', adController.indexPost);
+    app.post('/ad', adController.indexPost);
 
     app.get('/ad/create', adController.createGet);
     app.post('/ad/create', adController.createPost);

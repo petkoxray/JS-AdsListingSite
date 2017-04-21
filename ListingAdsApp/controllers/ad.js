@@ -9,22 +9,14 @@ let categories = '';
 module.exports = {
     indexGet: (req, res) => {
         Ad.find({}).sort({date: 'desc'}).populate('author category town').then(ads => {
-            ads.forEach(ads => {
-                ads.content = ads.content.substr(0, 40) + '...';
+            ads.forEach(ad => {
+                ad.content = ad.content.substr(0, 40) + '...';
             });
             res.render('ad/index', { ads: ads});
         });
     },
     indexPost: (req, res) => {
-        let word = req.body.search;
-        console.log(word);
-        Town.findOne({name: word}).populate('ads').then(town => {
-           if (town) {
-               res.render('ad/index', {ads: town.ads})
-           } else {
-               res.redirect('ad');
-           }
-        });
+
     },
 
     createGet: (req, res) => {
@@ -254,7 +246,7 @@ module.exports = {
             });
         });
     },
-}
+};
 
 
 
