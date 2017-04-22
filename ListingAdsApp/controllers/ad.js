@@ -134,15 +134,17 @@ module.exports = {
     detailsGet: (req, res) => {
         let id = req.params.id;
 
-        Ad.findById(id).populate('author category town').then( ad => {
+        Ad.findById(id).populate('author category town comments').then( ad => {
             if (!req.user) {
-                res.render('ad/details', {ad: ad, isUserAuthorized: false});
+                res.render('ad/details', {ad: ad, isUserAuthorized: false, error: req.session.error});
+                delete req.session.error;
                 return;
             }
 
             req.user.isInRole('Admin').then(isAdmin => {
                 let isUserAuthorized = isAdmin || req.user.isAuthor(ad);
-                res.render('ad/details', {ad: ad, isUserAuthorized: isUserAuthorized});
+                res.render('ad/details', {ad: ad, isUserAuthorized: isUserAuthorized, error: req.session.error});
+                delete req.session.error;
             });
         });
     },
@@ -152,17 +154,22 @@ module.exports = {
 
         Ad.findById(id).then(ad => {
             let username = req.body.username;
+            if (req.isAuthenticated()) {
+                username = req.user.fullName;
+            }
             let content = req.body.comment;
 
             if (username && content) {
                 Comment.create({username: username,content: content, ad: ad.id}).then(comment => {
                     ad.comments.push(comment);
                     ad.save(err => {
-                        if (err)
-                            console.log(err);
+                        if (err) console.log(err);
                     });
-                    res.redirect('/');
-                })
+                    res.redirect('/ad/details/' + ad.id);
+                });
+            } else {
+                req.session.error = 'You should write a name or be logged in to post comments';
+                res.redirect('/ad/details/' + ad.id);
             }
         });
     },
@@ -260,9 +267,10 @@ module.exports = {
         Ad.findById(id).populate('author').then(ad => {
             req.user.isInRole('Admin').then(isAdmin => {
                 if (isAdmin || req.user.isAuthor(ad)) {
-                    Ad.findByIdAndRemove(id).populate('author category town').then(ad => {
+                    Ad.findByIdAndRemove(id).populate('author category comments town').then(ad => {
                         let author = ad.author;
                         let category = ad.category;
+                        let comments = ad.comments;
                         let town = ad.town;
                         let authorIndex = author.ads.indexOf(ad.id);
                         let categoryIndex = category.ads.indexOf(ad.id);
@@ -279,6 +287,9 @@ module.exports = {
                             errMsg = 'Ad was not found for category';
                             res.render('ad/delete', {error: errMsg})
                         } else {
+                            comments.forEach(comment => {
+                               Comment.findByIdAndRemove(comment.id).then(update => {});
+                            });
                             category.ads.splice(categoryIndex,1);
                             category.save(err => {
                                 if (err) console.log(err);

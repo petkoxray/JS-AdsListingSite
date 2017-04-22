@@ -30,9 +30,11 @@
                 <div class="row">
                     <div class="col-md-12">
                         <form action="" method="POST" id="commentform">
+                            {{#unless user}}
                             <div id="comment-name" class="form-row">
                                 <input type = "text" placeholder = "Name (required)" name = "username"  id = "name" >
                             </div>
+                            {{/unless}}
                             <div id="comment-message" class="form-row">
                                 <textarea name = "comment" placeholder = "Message" id = "comment" ></textarea>
                             </div>
@@ -43,16 +45,16 @@
             </div>
         </div>
         <br><br><br>
+        {{#each ad.comments}}
             <div class="col-sm-8 col-lg-offset-2">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <strong>username</strong> <span class="text-muted">commented 5 days ago</span>
+                        <strong>{{this.username}}</strong> <span class="text-muted">commented on {{this.date}}</span>
                     </div>
-                    <div class="panel-body">
-                        Panel content
-                    </div>
+                    <div class="panel-body">{{this.content}}</div>
                 </div>
             </div>
+        {{/each}}
         </div>
         </div>
     </div>
