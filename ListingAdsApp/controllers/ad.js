@@ -1,6 +1,7 @@
 const Category = require('mongoose').model('Category');
 const Town = require('mongoose').model('Town');
 const Ad = require('mongoose').model('Ad');
+const Comment = require('mongoose').model('Comment');
 const randomString = require('randomstring');
 
 let towns = '';
@@ -143,7 +144,27 @@ module.exports = {
                 let isUserAuthorized = isAdmin || req.user.isAuthor(ad);
                 res.render('ad/details', {ad: ad, isUserAuthorized: isUserAuthorized});
             });
-        })
+        });
+    },
+
+    detailsPost: (req, res) => {
+        let id = req.params.id;
+
+        Ad.findById(id).then(ad => {
+            let username = req.body.username;
+            let content = req.body.comment;
+
+            if (username && content) {
+                Comment.create({username: username,content: content, ad: ad.id}).then(comment => {
+                    ad.comments.push(comment);
+                    ad.save(err => {
+                        if (err)
+                            console.log(err);
+                    });
+                    res.redirect('/');
+                })
+            }
+        });
     },
 
     editGet: (req ,res) => {

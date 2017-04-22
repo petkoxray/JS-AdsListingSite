@@ -29,6 +29,7 @@ module.exports = (app) => {
     app.post('/ad/create', adController.createPost);
 
     app.get('/ad/details/:id', adController.detailsGet);
+    app.post('/ad/details/:id', adController.detailsPost);
 
     app.get('/ad/edit/:id', adController.editGet);
     app.post('/ad/edit/:id', adController.editPost);

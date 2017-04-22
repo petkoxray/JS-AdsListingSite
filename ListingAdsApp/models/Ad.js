@@ -8,6 +8,7 @@ let adSchema = mongoose.Schema (
         content: {type: String, required: true },
         category: {type: ObjectId, ref: 'Category', required: true},
         town: {type: ObjectId, ref: 'Town', required: true},
+        comments: [{type:ObjectId, ref: 'Comment'}],
         phone: {type: Number, required: true },
         date: {type: Date, default: Date.now() },
         price: {type: Number, required:true},

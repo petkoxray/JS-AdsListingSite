@@ -19,6 +19,7 @@ module.exports = (config) => {
     require('./../models/Category').initialize();
     require('./../models/Town').initialize();
     require('./../models/Ad');
+    require('./../models/Comment');
 };
 
 

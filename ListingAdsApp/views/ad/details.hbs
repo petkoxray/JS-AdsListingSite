@@ -14,6 +14,7 @@
                     </div>
                 </div>
             </div>
+
             <footer>
                 <div class="pull-right">
                     {{#if isUserAuthorized}}
@@ -23,8 +24,36 @@
                     <a class="btn btn-default btn-xs" href="/">Back &raquo;</a>
                 </div>
             </footer>
-        </div>
 
+            <br><br><br>
+            <div id='form'>
+                <div class="row">
+                    <div class="col-md-12">
+                        <form action="" method="POST" id="commentform">
+                            <div id="comment-name" class="form-row">
+                                <input type = "text" placeholder = "Name (required)" name = "username"  id = "name" >
+                            </div>
+                            <div id="comment-message" class="form-row">
+                                <textarea name = "comment" placeholder = "Message" id = "comment" ></textarea>
+                            </div>
+                        <div class="pull-right"><a href="#"><input type="submit" name="csubmit" id="commentSubmit"  value="Submit Comment"></a></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br><br><br>
+            <div class="col-sm-8 col-lg-offset-2">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <strong>username</strong> <span class="text-muted">commented 5 days ago</span>
+                    </div>
+                    <div class="panel-body">
+                        Panel content
+                    </div>
+                </div>
+            </div>
+        </div>
         </div>
     </div>
 </div>
