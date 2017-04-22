@@ -67,23 +67,21 @@ module.exports = {
         req.user.isInRole('Admin').then(isAdmin => {
             if (isAdmin) {
                 let categoryArgs = req.body;
-                let regexCat = /[A-Z][a-z\s]+/;
+                let regexCat = /^[A-Z][a-z\s]+$/;
                 let errMsg = '';
 
-                if (!categoryArgs.name || !regexCat.test(categoryArgs.name)) {
-                    errMsg = 'Category name is invalid!';
-                    req.session.error = errMsg;
-                    res.redirect('categories');
-                    return;
-                }
-
-                Category.create(categoryArgs).then(cat => {
-                    res.redirect('categories')
+                Category.findOne({name: categoryArgs.name}).then(category => {
+                    if (category || !categoryArgs.name || !regexCat.test(categoryArgs.name)) {
+                        errMsg = 'Category name is invalid or category with that name already exists!';
+                        req.session.error = errMsg;
+                        res.redirect('categories');
+                    } else {
+                        Category.create(categoryArgs).then(cat => {
+                            res.redirect('categories')
+                        });
+                    }
                 });
-                return;
             }
-
-            res.redirect('/');
         });
     },
 
@@ -145,20 +143,20 @@ module.exports = {
 
     townsPost: (req, res) => {
         let townArgs = req.body;
-        let regexTown = /[A-Z][a-z\s]+/;
+        let regexTown = /^[A-Z][a-z\s]+$/;
         let errMsg = '';
 
-        if (!townArgs.name || !regexTown.test(townArgs.name)) {
-            errMsg = 'Town name is invalid!';
-            req.session.error = errMsg;
-            res.redirect('towns');
-            return;
-        }
-
-        Town.create(townArgs).then(town => {
-            res.redirect('towns');
-        })
-
+        Town.findOne({name: townArgs.name}).then(town => {
+            if (town || !townArgs.name || !regexTown.test(townArgs.name)) {
+                errMsg = 'Town name is invalid or town with that name already exist!';
+                req.session.error = errMsg;
+                res.redirect('towns');
+            } else {
+                Town.create(townArgs).then(town => {
+                    res.redirect('towns');
+                });
+            }
+        });
     },
 
     townDeleteGet: (req , res) => {
