@@ -172,7 +172,9 @@ module.exports = {
 
             let id = req.params.id;
 
-            Town.findOne({_id: id}).populate('ads').then(town => {
+            Town.findOne({_id: id})
+                .populate({path: 'ads', populate: {path: 'author category town'}})
+                .then(town => {
                 let ads = town.ads;
                 res.render('admin/town-delete', { town: town, ads: ads});
             });
