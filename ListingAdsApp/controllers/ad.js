@@ -3,9 +3,8 @@ const Town = require('mongoose').model('Town');
 const Ad = require('mongoose').model('Ad');
 const Comment = require('mongoose').model('Comment');
 const randomString = require('randomstring');
-
-let towns = '';
-let categories = '';
+let towns;
+let categories;
 
 module.exports = {
     indexGet: (req, res) => {
@@ -28,10 +27,12 @@ module.exports = {
                         if (ads.length > 0) {
                             res.render('ad/index', {ads: ads});
                         } else {
-                            res.render('ad/index', {error: `Sorry we didnt find ads in ${town.name}`})
+                            let error = `Sorry we didnt find ads in ${town.name}`;
+                            res.render('ad/index', {error: error})
                         }
                     } else {
-                        res.render('ad/index', {error: 'Sorry we didnt find ads that much your search'})
+                        let error = 'Sorry we didnt find ads that much your search';
+                        res.render('ad/index', {error: error})
                     }
                 });
         } else {
@@ -43,10 +44,12 @@ module.exports = {
                         if (ads.length > 0) {
                             res.render('ad/index', {ads: ads});
                         } else {
-                            res.render('ad/index', {error: `Sorry we didnt find ads in ${category.name} category`})
+                            let error = `Sorry we didnt find ads in ${category.name} category`;
+                            res.render('ad/index', {error: error});
                         }
                     } else {
-                        res.render('ad/index', {error: 'Sorry we didnt find ads that much your search'})
+                        let error = 'Sorry we didnt find ads that much your search';
+                        res.render('ad/index', {error: error})
                     }
                 });
         }
@@ -168,7 +171,7 @@ module.exports = {
                     res.redirect('/ad/details/' + ad.id);
                 });
             } else {
-                req.session.error = 'You should write a name or be logged in to post comments';
+                req.session.error = 'You should write something';
                 res.redirect('/ad/details/' + ad.id);
             }
         });
@@ -211,13 +214,13 @@ module.exports = {
                     let errorMsg = '';
 
                     if (!adArgs.title) {
-                        errorMsg = 'Ad title cannot be empty!'
+                        errorMsg = 'Ad title cannot be empty!';
                     } else if (!adArgs.content) {
-                        errorMsg = 'Ad content cannot be empty!'
+                        errorMsg = 'Ad content cannot be empty!';
                     } else if (!adArgs.phone || !regexPhone.test(adArgs.phone)) {
-                        errorMsg = 'Phone must be valid'
+                        errorMsg = 'Phone must be valid';
                     } else if (!adArgs.price || !regexPrice.test(adArgs.price)) {
-                        errorMsg = 'Price must be valid'
+                        errorMsg = 'Price must be valid';
                     }
 
                     if (errorMsg) {
@@ -229,7 +232,7 @@ module.exports = {
                                 {title: adArgs.title, price: adArgs.price, content: adArgs.content, phone: adArgs.phone}})
                             .then(updateStatus => {
                                 res.redirect(`/ad/details/${id}`);
-                            })
+                            });
                     }
                     return;
                 }
@@ -303,7 +306,7 @@ module.exports = {
                             author.ads.splice(authorIndex, 1);
                             author.save().then(() => {
                                 res.redirect('/');
-                            })
+                            });
                         }
                     });
                     return;

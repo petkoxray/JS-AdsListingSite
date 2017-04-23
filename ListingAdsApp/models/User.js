@@ -44,14 +44,7 @@ userSchema.method ({
         });
     },
     isAdmin: function () {
-        return Role.findOne({name: 'Admin'}).then(role => {
-            if (!role) {
-                return false;
-            }
-
-            let isInRole = this.roles.indexOf(role.id) !== -1;
-            return isInRole;
-        });
+        return this.user.email === 'admin@abv.bg';
     },
 
 });

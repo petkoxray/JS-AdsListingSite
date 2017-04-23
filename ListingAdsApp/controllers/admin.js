@@ -277,7 +277,7 @@ module.exports = {
                         let categoryIndex = category.ads.indexOf(ad.id);
 
                         comments.forEach(comment => {
-                            Comment.findByIdAndRemove(comment.id).then(update => {});
+                            Comment.findByIdAndRemove(comment.id).then( update => {});
                         });
                         category.ads.splice(categoryIndex,1);
                         category.save(err => {
