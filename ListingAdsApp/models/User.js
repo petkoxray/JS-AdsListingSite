@@ -44,7 +44,7 @@ userSchema.method ({
         });
     },
     isAdmin: function () {
-        return Role.find({name: 'Admin'}).then(role => {
+        return Role.findOne({name: 'Admin'}).then(role => {
             if (!role) {
                 return false;
             }
