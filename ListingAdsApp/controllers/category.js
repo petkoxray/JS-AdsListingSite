@@ -17,7 +17,7 @@ module.exports = {
           });
 
           res.render('category/index', {ads: ads, categoryName: categoryName})
-      })
+      });
     }
 
 };

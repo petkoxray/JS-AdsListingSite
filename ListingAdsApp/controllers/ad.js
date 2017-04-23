@@ -58,8 +58,8 @@ module.exports = {
             Town.find({}).then(t => {
                 towns = t;
                 res.render('ad/create', {categories: c, towns: t});
-            })
-        })
+            });
+        });
     },
 
     createPost: (req, res) => {
@@ -123,7 +123,7 @@ module.exports = {
                         if (err) {
                             res.redirect('/', {err: err.message})
                         } else {
-                            res.redirect('/')
+                            res.redirect('/ad/details/' + ad.id)
                         }
                     });
                 });
@@ -153,13 +153,13 @@ module.exports = {
         let id = req.params.id;
 
         Ad.findById(id).then(ad => {
-            let username = req.body.username;
+            let username = 'Anonymous';
             if (req.isAuthenticated()) {
                 username = req.user.fullName;
             }
             let content = req.body.comment;
 
-            if (username && content) {
+            if (content) {
                 Comment.create({username: username,content: content, ad: ad.id}).then(comment => {
                     ad.comments.push(comment);
                     ad.save(err => {
@@ -267,7 +267,9 @@ module.exports = {
         Ad.findById(id).populate('author').then(ad => {
             req.user.isInRole('Admin').then(isAdmin => {
                 if (isAdmin || req.user.isAuthor(ad)) {
-                    Ad.findByIdAndRemove(id).populate('author category comments town').then(ad => {
+                    Ad.findByIdAndRemove(id)
+                        .populate('author category comments town')
+                        .then(ad => {
                         let author = ad.author;
                         let category = ad.category;
                         let comments = ad.comments;

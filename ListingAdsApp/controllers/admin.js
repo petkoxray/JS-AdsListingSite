@@ -143,7 +143,7 @@ module.exports = {
                 res.render('admin/towns', { towns: towns, error: req.session.error});
                 delete req.session.error;
             });
-        })
+        });
     },
 
     townsPost: (req, res) => {
@@ -183,7 +183,7 @@ module.exports = {
                 let ads = town.ads;
                 res.render('admin/town-delete', { town: town, ads: ads});
             });
-        })
+        });
     },
 
     townDeletePost: (req, res) => {
@@ -210,7 +210,7 @@ module.exports = {
                         author.save().then(() => {
                             res.redirect('/admin/towns');
                         });
-                    })
+                    });
                 });
             } else {
                 res.redirect('/admin/towns');
@@ -233,7 +233,7 @@ module.exports = {
             User.find({}).sort({date: 'desc'}).populate('ads').then(users => {
                 res.render('admin/users', { users: users});
             });
-        })
+        });
     },
 
     userDeleteGet: (req, res) => {

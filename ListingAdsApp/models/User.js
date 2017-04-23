@@ -93,11 +93,11 @@ module.exports.initialize =  () => {
                         } else {
                             console.log('Admin seeded successfully!')
                         }
-                    })
-                })
-            })
+                    });
+                });
+            });
         }
-    })
+    });
 };
 
 

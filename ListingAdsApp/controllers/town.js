@@ -20,7 +20,7 @@ module.exports= {
             });
 
             res.render('town/index', {ads:ads, townName: townName});
-        })
+        });
     }
 };
 

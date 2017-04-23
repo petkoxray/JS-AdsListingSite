@@ -53,11 +53,11 @@ module.exports = {
                             }
 
                         });
-                    })
+                    });
                 });
 
             }
-        })
+        });
     },
 
     loginGet: (req, res) => {
