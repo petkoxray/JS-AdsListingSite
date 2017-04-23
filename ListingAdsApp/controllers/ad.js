@@ -58,8 +58,8 @@ module.exports = {
             Town.find({}).then(t => {
                 towns = t;
                 res.render('ad/create', {categories: c, towns: t});
-            })
-        })
+            });
+        });
     },
 
     createPost: (req, res) => {
@@ -125,9 +125,9 @@ module.exports = {
                         } else {
                             res.redirect('/')
                         }
-                    })
-                })
-            })
+                    });
+                });
+            });
         });
     },
 
@@ -153,13 +153,13 @@ module.exports = {
         let id = req.params.id;
 
         Ad.findById(id).then(ad => {
-            let username = req.body.username;
+            let username = 'Guest';
             if (req.isAuthenticated()) {
                 username = req.user.fullName;
             }
             let content = req.body.comment;
 
-            if (username && content) {
+            if (content) {
                 Comment.create({username: username,content: content, ad: ad.id}).then(comment => {
                     ad.comments.push(comment);
                     ad.save(err => {
@@ -168,7 +168,7 @@ module.exports = {
                     res.redirect('/ad/details/' + ad.id);
                 });
             } else {
-                req.session.error = 'You should write a name or be logged in to post comments';
+                req.session.error = 'You should write some content to post a new comment!';
                 res.redirect('/ad/details/' + ad.id);
             }
         });
@@ -190,8 +190,8 @@ module.exports = {
                 }
 
                 res.redirect('/');
-            })
-        })
+            });
+        });
     },
 
     editPost: (req, res) => {
@@ -229,7 +229,7 @@ module.exports = {
                                 {title: adArgs.title, price: adArgs.price, content: adArgs.content, phone: adArgs.phone}})
                             .then(updateStatus => {
                                 res.redirect(`/ad/details/${id}`);
-                            })
+                            });
                     }
                     return;
                 }
@@ -301,7 +301,7 @@ module.exports = {
                             author.ads.splice(authorIndex, 1);
                             author.save().then(() => {
                                 res.redirect('/');
-                            })
+                            });
                         }
                     });
                     return;

@@ -30,15 +30,10 @@
                 <div class="row">
                     <div class="col-md-12">
                         <form action="" method="POST" id="commentform">
-                            {{#unless user}}
-                            <div id="comment-name" class="form-row">
-                                <input type = "text" placeholder = "Name (required)" name = "username"  id = "name" >
-                            </div>
-                            {{/unless}}
                             <div id="comment-message" class="form-row">
                                 <textarea name = "comment" placeholder = "Message" id = "comment" ></textarea>
                             </div>
-                        <div class="pull-right"><a href="#"><input type="submit" name="csubmit" id="commentSubmit"  value="Submit Comment"></a></div>
+                        <div class="pull-right"><a href="#"><input type="submit" name="csubmit" id="commentSubmit" value="Submit Comment"></a></div>
                         </form>
                     </div>
                 </div>

@@ -4,6 +4,7 @@ const Category = mongoose.model('Category');
 const Town = mongoose.model('Town');
 const User = mongoose.model('User');
 const Role = mongoose.model('Role');
+const Comment = mongoose.model('Comment');
 
 module.exports = {
     index: (req, res) => {
@@ -35,9 +36,9 @@ module.exports = {
                 ads.forEach(ads => {
                     ads.title = ads.title.substr(0, 10) + '...';
                 });
-                res.render('admin/ads', { ads: ads})
+                res.render('admin/ads', { ads: ads});
             });
-        })
+        });
     },
 
     categoriesGet: (req, res) => {
@@ -55,7 +56,7 @@ module.exports = {
                 res.render('admin/categories', { categories: categories, error: req.session.error});
                 delete req.session.error;
             });
-        })
+        });
     },
 
     categoriesPost: (req, res) => {
@@ -89,8 +90,8 @@ module.exports = {
        let id = req.params.id;
 
        Category.findOne({_id: id}).populate('ads').then(category => {
-           res.render('admin/category-delete', {category: category})
-       })
+           res.render('admin/category-delete', {category: category});
+       });
     },
 
     categoryDeletePost: (req, res) => {
@@ -99,12 +100,16 @@ module.exports = {
             let ads = category.ads;
             if (ads.length !== 0) {
                 ads.forEach(ad => {
-                    Ad.findByIdAndRemove(ad.id).populate('author town').then(ad => {
+                    Ad.findByIdAndRemove(ad.id).populate('author town comments').then(ad => {
                         let author = ad.author;
+                        let comments = ad.comments;
                         let town = ad.town;
                         let authorIndex = author.ads.indexOf(ad.id);
                         let townIndex = town.ads.indexOf(ad.id);
 
+                        comments.forEach(comment => {
+                            Comment.findByIdAndRemove(comment.id).then(update => {});
+                        });
                         town.ads.splice(townIndex,1);
                         town.save(err => {
                             if (err) console.log(err);
@@ -112,13 +117,13 @@ module.exports = {
                         author.ads.splice(authorIndex, 1);
                         author.save().then(() => {
                             res.redirect('/admin/categories');
-                        })
-                    })
+                        });
+                    });
                 });
             } else {
                 res.redirect('/admin/categories');
             }
-        })
+        });
 
     },
 
@@ -187,12 +192,16 @@ module.exports = {
             let ads = town.ads;
             if (ads.length !== 0) {
                 ads.forEach(ad => {
-                    Ad.findByIdAndRemove(ad.id).populate('author category').then(ad => {
+                    Ad.findByIdAndRemove(ad.id).populate('author category comments').then(ad => {
                         let author = ad.author;
                         let category = ad.category;
+                        let comments = ad.comments;
                         let authorIndex = author.ads.indexOf(ad.id);
                         let categoryIndex = category.ads.indexOf(ad.id);
 
+                        comments.forEach(comment => {
+                            Comment.findByIdAndRemove(comment.id).then(update => {});
+                        });
                         category.ads.splice(categoryIndex,1);
                         category.save(err => {
                             if (err) console.log(err);
@@ -200,7 +209,7 @@ module.exports = {
                         author.ads.splice(authorIndex, 1);
                         author.save().then(() => {
                             res.redirect('/admin/towns');
-                        })
+                        });
                     })
                 });
             } else {
@@ -241,7 +250,7 @@ module.exports = {
             User.findOne({_id: req.params.id}).populate('ads').then(user => {
                 res.render('admin/user-delete', { user: user});
             });
-        })
+        });
     },
 
     userDeletePost: (req, res) => {
@@ -260,12 +269,16 @@ module.exports = {
             let ads = user.ads;
             if (ads.length !== 0) {
                 ads.forEach(ad => {
-                    Ad.findByIdAndRemove(ad.id).populate('category town').then(ad => {
+                    Ad.findByIdAndRemove(ad.id).populate('category town comments').then(ad => {
                         let town = ad.town;
                         let category = ad.category;
+                        let comments = ad.comments;
                         let townIndex = town.ads.indexOf(ad.id);
                         let categoryIndex = category.ads.indexOf(ad.id);
 
+                        comments.forEach(comment => {
+                            Comment.findByIdAndRemove(comment.id).then(update => {});
+                        });
                         category.ads.splice(categoryIndex,1);
                         category.save(err => {
                             if (err) console.log(err);
@@ -273,13 +286,13 @@ module.exports = {
                         town.ads.splice(townIndex, 1);
                         town.save().then(() => {
                             res.redirect('/admin/users');
-                        })
-                    })
-                })
+                        });
+                    });
+                });
             } else {
                 res.redirect('/admin/users');
             }
 
-        })
+        });
     },
 };
