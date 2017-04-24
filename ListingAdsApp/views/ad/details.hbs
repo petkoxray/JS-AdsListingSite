@@ -25,21 +25,23 @@
                 </div>
             </footer>
 
-            <br><br><br>
+            <br><br>
+            <h3>Write Comment</h3>
             <div id='form'>
                 <div class="row">
                     <div class="col-md-12">
                         <form action="" method="POST" id="commentform">
                             <div id="comment-message" class="form-row">
-                                <textarea name = "comment" placeholder = "Message" id = "comment" required ></textarea>
+                                <textarea class="form-control" name = "comment" minlength="7" placeholder = "Message" id = "comment" required ></textarea>
+                                <br>
+                                <div><input type="submit" name="csubmit" id="commentSubmit" value="Submit Comment"></div>
                             </div>
-                        <div class="pull-right"><a href="#"><input type="submit" name="csubmit" id="commentSubmit" value="Submit Comment"></a></div>
+                            <br>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
-        <br><br><br>
         {{#each ad.comments}}
             <div class="col-sm-8 col-lg-offset-2">
                 <div class="panel panel-default">

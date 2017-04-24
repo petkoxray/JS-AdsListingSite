@@ -32,7 +32,10 @@ module.exports = {
                 return;
             }
 
-            Ad.find({}).sort({date: 'desc'}).populate('author category town').then(ads => {
+            Ad.find({})
+                .sort({date: 'desc'})
+                .populate('author category town comments')
+                .then(ads => {
                 ads.forEach(ads => {
                     ads.title = ads.title.substr(0, 10) + '...';
                 });
@@ -78,7 +81,7 @@ module.exports = {
                         res.redirect('categories');
                     } else {
                         Category.create(categoryArgs).then(cat => {
-                            res.redirect('categories')
+                            res.redirect('categories');
                         });
                     }
                 });
