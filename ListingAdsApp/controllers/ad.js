@@ -49,7 +49,7 @@ module.exports = {
                         }
                     } else {
                         let error = 'Sorry we didnt find ads that much your search';
-                        res.render('ad/index', {error: error})
+                        res.render('ad/index', {error: error});
                     }
                 });
         }

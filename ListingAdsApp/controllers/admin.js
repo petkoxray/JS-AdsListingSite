@@ -13,12 +13,12 @@ module.exports = {
             return;
         }
         req.user.isInRole('Admin').then(isAdmin => {
-            if (!isAdmin) {
+            if (isAdmin) {
+                res.render('admin/index');
+            } else {
                 res.redirect('/');
-                return;
             }
-            res.render('admin/index');
-        })
+        });
     },
 
     adsGet: (req, res) => {
@@ -55,8 +55,11 @@ module.exports = {
                 return;
             }
 
-            Category.find({}).sort({date: 'desc'}).populate('ads').then(categories => {
-                res.render('admin/categories', { categories: categories, error: req.session.error});
+            Category.find({}).sort({date: 'desc'})
+                .populate('ads')
+                .then(categories => {
+                res.render('admin/categories',
+                    { categories: categories, error: req.session.error});
                 delete req.session.error;
             });
         });
@@ -85,49 +88,76 @@ module.exports = {
                         });
                     }
                 });
+            } else {
+                res.redirect('/');
             }
         });
     },
 
     categoryDeleteGet: (req ,res) => {
-       let id = req.params.id;
+        if (!req.isAuthenticated()) {
+            res.redirect('/');
+            return;
+        }
+        req.user.isInRole('Admin').then(isAdmin => {
+            if (!isAdmin) {
+                res.redirect('/');
+                return;
+            }
+            let id = req.params.id;
 
-       Category.findOne({_id: id}).populate('ads').then(category => {
-           res.render('admin/category-delete', {category: category});
-       });
+            Category.findOne({_id: id})
+                .populate({path: 'ads', populate: {path: 'author category town'}})
+                .then(category => {
+                    let ads = category.ads;
+                    res.render('admin/category-delete', {category: category, ads: ads});
+                });
+        });
     },
 
     categoryDeletePost: (req, res) => {
-        let id = req.params.id;
-        Category.findByIdAndRemove(id).populate('ads').then(category => {
-            let ads = category.ads;
-            if (ads.length !== 0) {
-                ads.forEach(ad => {
-                    Ad.findByIdAndRemove(ad.id).populate('author town comments').then(ad => {
-                        let author = ad.author;
-                        let comments = ad.comments;
-                        let town = ad.town;
-                        let authorIndex = author.ads.indexOf(ad.id);
-                        let townIndex = town.ads.indexOf(ad.id);
+        if (!req.isAuthenticated()) {
+            res.redirect('/user/login');
+            return;
+        }
 
-                        comments.forEach(comment => {
-                            Comment.findByIdAndRemove(comment.id).then(update => {});
-                        });
-                        town.ads.splice(townIndex,1);
-                        town.save(err => {
-                            if (err) console.log(err);
-                        });
-                        author.ads.splice(authorIndex, 1);
-                        author.save().then(() => {
-                            res.redirect('/admin/categories');
+        req.user.isInRole('Admin').then(isAdmin => {
+            if (!isAdmin) {
+                res.redirect('/');
+                return;
+            }
+            let id = req.params.id;
+            Category.findByIdAndRemove(id).populate('ads').then(category => {
+                let ads = category.ads;
+                if (ads.length !== 0) {
+                    ads.forEach(ad => {
+                        Ad.findByIdAndRemove(ad.id)
+                            .populate('author town comments')
+                            .then(ad => {
+                            let author = ad.author;
+                            let comments = ad.comments;
+                            let town = ad.town;
+                            let authorIndex = author.ads.indexOf(ad.id);
+                            let townIndex = town.ads.indexOf(ad.id);
+
+                            comments.forEach(comment => {
+                                Comment.findByIdAndRemove(comment.id).then(update => {});
+                            });
+                            town.ads.splice(townIndex,1);
+                            town.save(err => {
+                                if (err) console.log(err);
+                            });
+                            author.ads.splice(authorIndex, 1);
+                            author.save().then(() => {
+                                res.redirect('/admin/categories');
+                            });
                         });
                     });
-                });
-            } else {
-                res.redirect('/admin/categories');
-            }
+                } else {
+                    res.redirect('/admin/categories');
+                }
+            });
         });
-
     },
 
 
@@ -137,37 +167,67 @@ module.exports = {
             return;
         }
         req.user.isInRole('Admin').then(isAdmin => {
-            if (!isAdmin) {
+            if (isAdmin) {
+                Town.find({}).sort({date: 'desc'}).populate('ads').then(towns => {
+                    res.render('admin/towns', { towns: towns, error: req.session.error});
+                    delete req.session.error;
+                });
+            } else {
                 res.redirect('/');
-                return;
             }
-
-            Town.find({}).sort({date: 'desc'}).populate('ads').then(towns => {
-                res.render('admin/towns', { towns: towns, error: req.session.error});
-                delete req.session.error;
-            });
         });
     },
 
     townsPost: (req, res) => {
-        let townArgs = req.body;
-        let regexTown = /^[A-Z][a-z\s]+$/;
-        let errMsg = '';
+        if (!req.isAuthenticated()) {
+            res.redirect('/user/login');
+            return;
+        }
 
-        Town.findOne({name: townArgs.name}).then(town => {
-            if (town || !townArgs.name || !regexTown.test(townArgs.name)) {
-                errMsg = 'Town name is invalid or town with that name already exist!';
-                req.session.error = errMsg;
-                res.redirect('towns');
-            } else {
-                Town.create(townArgs).then(town => {
-                    res.redirect('towns');
+        req.user.isInRole('Admin').then(isAdmin => {
+            if (isAdmin) {
+                let townArgs = req.body;
+                let regexTown = /^[A-Z][a-z\s]+$/;
+                let errMsg = '';
+
+                Town.findOne({name: townArgs.name}).then(town => {
+                    if (town || !townArgs.name || !regexTown.test(townArgs.name)) {
+                        errMsg = 'Town name is invalid or town with that name already exist!';
+                        req.session.error = errMsg;
+                        res.redirect('towns');
+                    } else {
+                        Town.create(townArgs).then(town => {
+                            res.redirect('towns');
+                        });
+                    }
                 });
+            } else {
+                res.redirect('/');
             }
         });
     },
 
     townDeleteGet: (req , res) => {
+        if (!req.isAuthenticated()) {
+            res.redirect('/');
+            return;
+        }
+        req.user.isInRole('Admin').then(isAdmin => {
+            if (isAdmin) {
+                let id = req.params.id;
+                Town.findOne({_id: id})
+                    .populate({path: 'ads', populate: {path: 'author category town'}})
+                    .then(town => {
+                        let ads = town.ads;
+                        res.render('admin/town-delete', { town: town, ads: ads});
+                    });
+            } else {
+                res.redirect('/');
+            }
+        });
+    },
+
+    townDeletePost: (req, res) => {
         if (!req.isAuthenticated()) {
             res.redirect('/');
             return;
@@ -179,47 +239,39 @@ module.exports = {
             }
 
             let id = req.params.id;
-
-            Town.findOne({_id: id})
-                .populate({path: 'ads', populate: {path: 'author category town'}})
+            Town.findByIdAndRemove(id)
+                .populate('ads')
                 .then(town => {
                 let ads = town.ads;
-                res.render('admin/town-delete', { town: town, ads: ads});
-            });
-        });
-    },
+                if (ads.length !== 0) {
+                    ads.forEach(ad => {
+                        Ad.findByIdAndRemove(ad.id)
+                            .populate('author category comments')
+                            .then(ad => {
+                            let author = ad.author;
+                            let category = ad.category;
+                            let comments = ad.comments;
+                            let authorIndex = author.ads.indexOf(ad.id);
+                            let categoryIndex = category.ads.indexOf(ad.id);
 
-    townDeletePost: (req, res) => {
-        let id = req.params.id;
-        Town.findByIdAndRemove(id).populate('ads').then(town => {
-            let ads = town.ads;
-            if (ads.length !== 0) {
-                ads.forEach(ad => {
-                    Ad.findByIdAndRemove(ad.id).populate('author category comments').then(ad => {
-                        let author = ad.author;
-                        let category = ad.category;
-                        let comments = ad.comments;
-                        let authorIndex = author.ads.indexOf(ad.id);
-                        let categoryIndex = category.ads.indexOf(ad.id);
-
-                        comments.forEach(comment => {
-                            Comment.findByIdAndRemove(comment.id).then(update => {});
-                        });
-                        category.ads.splice(categoryIndex,1);
-                        category.save(err => {
-                            if (err) console.log(err);
-                        });
-                        author.ads.splice(authorIndex, 1);
-                        author.save().then(() => {
-                            res.redirect('/admin/towns');
+                            comments.forEach(comment => {
+                                Comment.findByIdAndRemove(comment.id).then(update => {});
+                            });
+                            category.ads.splice(categoryIndex,1);
+                            category.save(err => {
+                                if (err) console.log(err);
+                            });
+                            author.ads.splice(authorIndex, 1);
+                            author.save().then(() => {
+                                res.redirect('/admin/towns');
+                            });
                         });
                     });
-                });
-            } else {
-                res.redirect('/admin/towns');
-            }
-        })
-
+                } else {
+                    res.redirect('/admin/towns');
+                }
+            });
+        });
     },
 
     usersGet: (req, res) => {
@@ -228,14 +280,13 @@ module.exports = {
             return;
         }
         req.user.isInRole('Admin').then(isAdmin => {
-            if (!isAdmin) {
+            if (isAdmin) {
+                User.find({}).sort({date: 'desc'}).populate('ads').then(users => {
+                    res.render('admin/users', { users: users});
+                });
+            } else {
                 res.redirect('/');
-                return;
             }
-
-            User.find({}).sort({date: 'desc'}).populate('ads').then(users => {
-                res.render('admin/users', { users: users});
-            });
         });
     },
 
@@ -245,57 +296,69 @@ module.exports = {
             return;
         }
         req.user.isInRole('Admin').then(isAdmin => {
-            if (!isAdmin) {
+            if (isAdmin) {
+                User.findOne({_id: req.params.id}).populate('ads').then(user => {
+                    res.render('admin/user-delete', { user: user});
+                });
+            } else {
                 res.redirect('/');
-                return;
             }
-
-            User.findOne({_id: req.params.id}).populate('ads').then(user => {
-                res.render('admin/user-delete', { user: user});
-            });
         });
     },
 
     userDeletePost: (req, res) => {
-        let id = req.params.id;
-        User.findByIdAndRemove(id).populate('ads roles').then(user => {
-            let roles = user.roles;
-            roles.forEach(role => {
-                let roleIndex = role.users.indexOf(user.id);
-                role.users.splice(roleIndex,1);
-                role.save(err => {
-                    if(err) {
-                        console.log(err);
-                    }
-                });
-            });
-            let ads = user.ads;
-            if (ads.length !== 0) {
-                ads.forEach(ad => {
-                    Ad.findByIdAndRemove(ad.id).populate('category town comments').then(ad => {
-                        let town = ad.town;
-                        let category = ad.category;
-                        let comments = ad.comments;
-                        let townIndex = town.ads.indexOf(ad.id);
-                        let categoryIndex = category.ads.indexOf(ad.id);
-
-                        comments.forEach(comment => {
-                            Comment.findByIdAndRemove(comment.id).then( update => {});
-                        });
-                        category.ads.splice(categoryIndex,1);
-                        category.save(err => {
-                            if (err) console.log(err);
-                        });
-                        town.ads.splice(townIndex, 1);
-                        town.save().then(() => {
-                            res.redirect('/admin/users');
+        if (!req.isAuthenticated()) {
+            res.redirect('/');
+            return;
+        }
+        req.user.isInRole('Admin').then(isAdmin => {
+            if (isAdmin) {
+                let id = req.params.id;
+                User.findByIdAndRemove(id)
+                    .populate('ads roles')
+                    .then(user => {
+                    let roles = user.roles;
+                    roles.forEach(role => {
+                        let roleIndex = role.users.indexOf(user.id);
+                        role.users.splice(roleIndex,1);
+                        role.save(err => {
+                            if(err) {
+                                console.log(err);
+                            }
                         });
                     });
+                    let ads = user.ads;
+                    if (ads.length !== 0) {
+                        ads.forEach(ad => {
+                            Ad.findByIdAndRemove(ad.id)
+                                .populate('category town comments')
+                                .then(ad => {
+                                let town = ad.town;
+                                let category = ad.category;
+                                let comments = ad.comments;
+                                let townIndex = town.ads.indexOf(ad.id);
+                                let categoryIndex = category.ads.indexOf(ad.id);
+
+                                comments.forEach(comment => {
+                                    Comment.findByIdAndRemove(comment.id).then( update => {});
+                                });
+                                category.ads.splice(categoryIndex,1);
+                                category.save(err => {
+                                    if (err) console.log(err);
+                                });
+                                town.ads.splice(townIndex, 1);
+                                town.save().then(() => {
+                                    res.redirect('/admin/users');
+                                });
+                            });
+                        });
+                    } else {
+                        res.redirect('/admin/users');
+                    }
                 });
             } else {
-                res.redirect('/admin/users');
+                res.redirect('/');
             }
-
         });
     },
 };

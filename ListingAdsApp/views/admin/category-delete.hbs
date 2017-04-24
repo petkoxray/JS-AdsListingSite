@@ -1,6 +1,32 @@
-<h1> {{category.name}}</h1>
-
+<h3> Are you sure that you want to delete category <strong>{{category.name}}</strong> and all corresponding ads in it ?</h3>
 <form class="form-horizontal" method="POST" action="/admin/category-delete/{{category.id}}">
     <button type="submit" class="btn btn-danger">Delete</button>
 </form>
+<br>
+<div class="container">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Town</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#each ads}}
+            <tr class="active">
+                <td><a href="/ad/details/{{id}}">{{title}}</a></td>
+                <td>{{author.fullName}}</td>
+                <td><a href="/town/{{town.id}}">{{town.name}}</a></td>
+                <td>
+                    <a href="/ad/edit/{{id}}"><button type="submit" class="btn btn-primary btn-xs">Edit</button></a>
+                    <a href="/ad/delete/{{id}}"><button type="submit" class="btn btn-danger btn-xs">Delete</button></a>
+                </td>
+            </tr>
+        {{/each}}
+        </tbody>
+    </table>
+</div>
+
 
