@@ -13,20 +13,20 @@
                 <div class="navbar-header">
                     <a href="/" class="navbar-brand">Ads Listing Site</a>
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
                     </button>
                 </div>
-                        <div class="navbar-collapse collapse" id="bs-example-navbar-collapse-1" aria-expanded="false">
-                            <ul class="nav navbar-nav">
-                                <li><a href="/ad/">Ads</a></li>
-                            </ul>
-                    {{#if user}}
-                        <div class="navbar-collapse collapse">
-                            <ul class="nav navbar-nav navbar-right">
-                                <li><a href="/user/details">Welcome({{user.fullName}})</a></li>
-                                {{#if user.isAdmin}}
+            <div class="navbar-collapse collapse" id="bs-example-navbar-collapse-1" aria-expanded="false">
+                <ul class="nav navbar-nav">
+                    <li><a href="/ad/">Ads</a></li>
+                </ul>
+                {{#if user}}
+                    <div class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a href="/user/details">Welcome({{user.fullName}})</a></li>
+                            {{#if user.isAdmin}}
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Admin Panel <span class="caret"></span></a>
                                     <ul class="dropdown-menu" role="menu">
@@ -36,36 +36,35 @@
                                         <li><a href="/admin/towns">Towns</a></li>
                                     </ul>
                                 </li>
-                                {{/if}}
-                                <li><a href="/user/myads">My ads</a></li>
-                                <li><a href="/ad/create">New Ad</a></li>
-                                <li><a href="/user/logout">Logout</a></li>
-                            </ul>
-                        </div>
-                    {{/if}}
-                    {{#unless user}}
-                        <div class="navbar-collapse collapse">
-                            <ul class="nav navbar-nav navbar-right">
-                                <li><a href="/user/register">Register</a></li>
-                                <li><a href="/user/login">Login</a></li>
-                            </ul>
-                        </div>
-                    {{/unless}}
-                </div>
-            </div>
+                            {{/if}}
+                            <li><a href="/user/myads">My ads</a></li>
+                            <li><a href="/ad/create">New Ad</a></li>
+                            <li><a href="/user/logout">Logout</a></li>
+                        </ul>
+                    </div>
+                {{/if}}
+                {{#unless user}}
+                    <div class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a href="/user/register">Register</a></li>
+                            <li><a href="/user/login">Login</a></li>
+                        </ul>
+                    </div>
+                {{/unless}}
             </div>
         </div>
-    </header>
-    {{#if error }}
-        <div class="alert alert-warning text-center">
-            <strong> {{ error }}</strong>
-        </div>
-    {{/if}}
-    {{{body}}}
-</body>
-<footer>
-    <div class="container modal-footer">
-        <p>&copy; 2017 - SoftUni Ads Listing App </p>
     </div>
-</footer>
+</header>
+{{#if error }}
+    <div class="alert alert-warning text-center">
+        <strong> {{ error }}</strong>
+    </div>
+{{/if}}
+{{{body}}}
+</body>
+    <footer>
+        <div class="container modal-footer">
+            <p>&copy; 2017 - SoftUni Ads Listing App </p>
+        </div>
+    </footer>
 </html>
