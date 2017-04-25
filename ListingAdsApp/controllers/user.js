@@ -1,6 +1,7 @@
 const User = require('mongoose').model('User');
 const Role = require('mongoose').model('Role');
 const Ad = require('mongoose').model('Ad');
+const Utils = require('./../utilities/utils');
 const encryption = require('./../utilities/encryption');
 
 module.exports = {
@@ -92,21 +93,12 @@ module.exports = {
     },
 
     detailsGet: (req, res) => {
-        if (!req.isAuthenticated()) {
-            res.redirect('/');
-            return;
-        }
-
         req.user.isInRole('Admin').then(isAdmin => {
             res.render('user/details', {user: req.user, isAdmin: isAdmin});
         });
     },
 
     detailsPost: (req , res) => {
-        if (!req.isAuthenticated()) {
-            res.redirect('/');
-            return;
-        }
         let id = req.user.id;
         let userArgs = req.body;
 
@@ -117,15 +109,10 @@ module.exports = {
     },
 
     myAdsGet: (req, res) => {
-        if (!req.isAuthenticated()) {
-            res.redirect('/');
-            return;
-        }
-
-        Ad.find({author: req.user.id}).populate('author category town').then(ads => {
-            ads.forEach(ads => {
-                ads.content = ads.content.substr(0, 40) + '...';
-            });
+        Ad.find({author: req.user.id})
+            .populate('author category town')
+            .then(ads => {
+                Utils.adsReformat(ads);
             res.render('user/myads', {ads: ads})
         });
     },
@@ -133,13 +120,11 @@ module.exports = {
     userAdsGet: (req, res) => {
         let id = req.params.id;
 
-        Ad.find({author: id}).populate('author category town').then(ads => {
-            ads.forEach(ad => {
-                if(ad.content.length > 20)
-                    ad.content = ad.content.substr(0, 40) + '...';
-            });
+        Ad.find({author: id})
+            .populate('author category town')
+            .then(ads => {
+                Utils.adsReformat(ads);
             res.render('user/ads', {ads: ads})
         });
     }
-
 };
