@@ -1,5 +1,9 @@
-.thumbnail-sm{
-    width: 350px;
-    height: 340px;
-    overflow: auto;
+.thumbnail-sma{
+    height: 65px;
+    width: 65px;
+}
+
+.thumbnail-smb{
+    height: 330px;
+    width: 100%;
 }

@@ -1,4 +1,5 @@
 const Ad = require('mongoose').model('Ad');
+const Utils = require('./../utilities/utils');
 
 module.exports= {
     index: (req, res) => {
@@ -15,12 +16,7 @@ module.exports= {
                 townName = ads[0].town.name;
             }
 
-            ads.forEach(ad => {
-                if(ad.content.length > 20)
-                    ad.content = ad.content.substr(0, 20) + '...';
-            });
-
-            res.render('town/index', {ads:ads, townName: townName});
+            res.render('town/index', {ads:Utils.adsReformat(ads), townName: townName});
         });
     }
 };

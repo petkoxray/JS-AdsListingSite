@@ -3,22 +3,20 @@ const Town = require('mongoose').model('Town');
 const Ad = require('mongoose').model('Ad');
 const Comment = require('mongoose').model('Comment');
 const randomString = require('randomstring');
+const Utils = require('./../utilities/utils');
 let towns;
 let categories;
 
 module.exports = {
     indexGet: (req, res) => {
         Ad.find({}).sort({date: 'desc'}).populate('author category town').then(ads => {
-            ads.forEach(ad => {
-                if (ad.content.length > 20)
-                    ad.content = ad.content.substr(0, 20) + '...';
-            });
+            Utils.adsReformat(ads);
             res.render('ad/index', { ads: ads});
         });
     },
     indexPost: (req, res) => {
         let filter = req.body.option;
-        let search = req.body.search;
+        let search = Utils.searchReformat(req.body.search);
         if (filter === 'town') {
             Town.findOne({name: search})
                 .populate({path: 'ads', populate: {path: 'author category town'}})
@@ -26,7 +24,7 @@ module.exports = {
                     if (town) {
                         let ads = town.ads;
                         if (ads.length > 0) {
-                            res.render('ad/index', {ads: ads});
+                            res.render('ad/index', {ads: Utils.adsReformat(ads)});
                         } else {
                             let error = `Sorry we didnt find ads in ${town.name}`;
                             res.render('ad/index', {error: error})
@@ -43,7 +41,7 @@ module.exports = {
                     if (category) {
                         let ads = category.ads;
                         if (ads.length > 0) {
-                            res.render('ad/index', {ads: ads});
+                            res.render('ad/index', {ads: Utils.adsReformat(ads)});
                         } else {
                             let error = `Sorry we didnt find ads in ${category.name} category`;
                             res.render('ad/index', {error: error});

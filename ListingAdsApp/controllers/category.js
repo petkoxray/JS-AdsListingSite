@@ -1,4 +1,5 @@
 const Ad = require('mongoose').model('Ad');
+const Utils = require('./../utilities/utils');
 
 module.exports = {
   index: (req, res) => {
@@ -12,12 +13,7 @@ module.exports = {
               categoryName = ads[0].category.name;
           }
 
-          ads.forEach(ad => {
-              if(ad.content.length > 20)
-                  ad.content = ad.content.substr(0, 20) + '...';
-          });
-
-          res.render('category/index', {ads: ads, categoryName: categoryName})
+          res.render('category/index', {ads: Utils.adsReformat(ads), categoryName: categoryName})
       });
     }
 
