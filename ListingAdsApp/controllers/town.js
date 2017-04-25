@@ -15,8 +15,9 @@ module.exports= {
                 townName = ads[0].town.name;
             }
 
-            ads.forEach(ads => {
-                ads.content = ads.content.substr(0, 40) + '...';
+            ads.forEach(ad => {
+                if(ad.content.length > 20)
+                    ad.content = ad.content.substr(0, 20) + '...';
             });
 
             res.render('town/index', {ads:ads, townName: townName});

@@ -134,8 +134,9 @@ module.exports = {
         let id = req.params.id;
 
         Ad.find({author: id}).populate('author category town').then(ads => {
-            ads.forEach(ads => {
-                ads.content = ads.content.substr(0, 40) + '...';
+            ads.forEach(ad => {
+                if(ad.content.length > 20)
+                    ad.content = ad.content.substr(0, 40) + '...';
             });
             res.render('user/ads', {ads: ads})
         });

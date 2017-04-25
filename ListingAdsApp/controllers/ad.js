@@ -10,7 +10,8 @@ module.exports = {
     indexGet: (req, res) => {
         Ad.find({}).sort({date: 'desc'}).populate('author category town').then(ads => {
             ads.forEach(ad => {
-                ad.content = ad.content.substr(0, 40) + '...';
+                if (ad.content.length > 20)
+                    ad.content = ad.content.substr(0, 20) + '...';
             });
             res.render('ad/index', { ads: ads});
         });
@@ -229,7 +230,10 @@ module.exports = {
                     } else {
                         Ad.update({_id: id},
                             {$set:
-                                {title: adArgs.title, price: adArgs.price, content: adArgs.content, phone: adArgs.phone}})
+                                {title: adArgs.title,
+                                    price: adArgs.price,
+                                    content: adArgs.content,
+                                    phone: adArgs.phone}})
                             .then(updateStatus => {
                                 res.redirect(`/ad/details/${id}`);
                             });
