@@ -38,14 +38,15 @@ module.exports = {
     let regexCat = /^[A-Z][a-z\s]+$/;
     let errMsg = '';
 
-    Category.findOne({name: categoryArgs.name}).then(category => {
-      if (category || !categoryArgs.name || !regexCat.test(categoryArgs.name)) {
-        errMsg = 'Category name is invalid or category with that name already exists!';
-        req.session.error = errMsg;
+    Category.findOne({name: categoryArgs.name})
+      .then(category => {
+        if (category || !categoryArgs.name || !regexCat.test(categoryArgs.name)) {
+          errMsg = 'Category name is invalid or category with that name already exists!';
+          req.session.error = errMsg;
         res.redirect('categories');
-      } else {
-        Category.create(categoryArgs).then(cat => {
-          res.redirect('categories');
+        } else {
+          Category.create(categoryArgs).then(cat => {
+            res.redirect('categories');
         });
       }
     });
@@ -113,8 +114,11 @@ module.exports = {
   categoryEditPost: (req, res) => {
     let id = req.params.id;
     let name = req.body.name;
-    Category.findOne({name: name}).then(category => {
-      let regexCategory = /^[A-Z][a-z\s]+$/;
+
+    Category.findOne({name: name})
+      .then(category => {
+        let regexCategory = /^[A-Z][a-z\s]+$/;
+
       if (category || !regexCategory.test(name)) {
         req.session.error = 'Category with that name already exist or category name is invalid!';
         res.redirect(`/admin/category-edit/${id}`);
@@ -139,6 +143,7 @@ module.exports = {
     let errMsg = '';
 
     Town.findOne({name: townArgs.name}).then(town => {
+
       if (town || !townArgs.name || !regexTown.test(townArgs.name)) {
         errMsg = 'Town name is invalid or town with that name already exist!';
         req.session.error = errMsg;
@@ -234,6 +239,26 @@ module.exports = {
     User.find({}).sort({date: 'desc'}).populate('ads').then(users => {
       res.render('admin/users', {users: users});
     });
+  },
+
+  userEditGet: (req, res) => {
+    let userId = req.params.id;
+
+    User.findOne({_id: userId})
+      .populate({path: 'ads', populate: {path: 'author category town'}})
+      .then(user => {
+        res.render('admin/user-edit', {user: user, ads: user.ads});
+      });
+  },
+
+  userEditPost: (req, res) => {
+    let id = req.params.id;
+    let fullName = req.body.fullName;
+
+    User.update({_id: id}, {$set: {fullName: fullName}})
+      .then(updateStatus => {
+        res.redirect('/admin/user-edit/' + id);
+      });
   },
 
   userDeleteGet: (req, res) => {

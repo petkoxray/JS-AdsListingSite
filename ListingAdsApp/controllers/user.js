@@ -93,9 +93,7 @@ module.exports = {
   },
 
   detailsGet: (req, res) => {
-    req.user.isInRole('Admin').then(isAdmin => {
-      res.render('user/details', {user: req.user, isAdmin: isAdmin});
-    });
+    res.render('user/details', {user: req.user});
   },
 
   detailsPost: (req, res) => {

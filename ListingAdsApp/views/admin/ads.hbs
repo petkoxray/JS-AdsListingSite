@@ -14,13 +14,17 @@
         {{#each ads}}
             <tr>
                 <td><a href="/ad/details/{{this.id}}">{{this.title}}</a></td>
-                <td>{{this.author.fullName}}</td>
-                <td>{{this.comments.length}}</td>
-                <td><a href="/category/{{this.category.id}}">{{this.category.name}}</a></td>
-                <td><a href="/town/{{this.town.id}}">{{this.town.name}}</a></td>
+                <td><a href="/admin/user-edit/{{this.author.id}}">{{this.author.fullName}}</a></td>
+                <td><span class="badge">{{this.comments.length}}</span></td>
+                <td><a href="/admin/category-edit/{{this.category.id}}">{{this.category.name}}</a></td>
+                <td><a href="/admin/town-edit/{{this.town.id}}">{{this.town.name}}</a></td>
                 <td>
-                    <a href="/ad/edit/{{this.id}}"><button type="submit" class="btn btn-primary btn-xs">Edit</button></a>
-                    <a href="/ad/delete/{{this.id}}"><button type="submit" class="btn btn-danger btn-xs">Delete</button></a>
+                    <a href="/ad/edit/{{this.id}}">
+                        <button type="submit" class="btn btn-primary btn-xs">Edit</button>
+                    </a>
+                    <a href="/ad/delete/{{this.id}}">
+                        <button type="submit" class="btn btn-danger btn-xs">Delete</button>
+                    </a>
                 </td>
             </tr>
         {{/each}}

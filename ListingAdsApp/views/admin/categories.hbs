@@ -2,7 +2,7 @@
     <form class="form-inline" method="POST" action="/admin/categories">
         <div class="form-group ">
             <label for="categoryName">Category name:</label>
-            <input type="text" class="form-control" id="categoryName" name="name" placeholder="Category Name" >
+            <input type="text" class="form-control" id="categoryName" name="name" placeholder="Category Name">
         </div>
         <button type="submit" class="btn btn-success">Create</button>
     </form>
@@ -21,8 +21,12 @@
                 <td>{{this.name}}</td>
                 <td><a href="/category/{{this.id}}"><span class="badge">{{this.ads.length}}</span></a></td>
                 <td>
-                    <a href="/admin/category-edit/{{this.id}}"><button type="submit" class="btn-xs btn-primary btn">Edit</button></a>
-                    <a href="/admin/category-delete/{{this.id}}"><button type="submit" class="btn btn-danger btn-xs">Delete</button></a>
+                    <a href="/admin/category-edit/{{this.id}}">
+                        <button type="submit" class="btn-xs btn-primary btn">Edit</button>
+                    </a>
+                    <a href="/admin/category-delete/{{this.id}}">
+                        <button type="submit" class="btn btn-danger btn-xs">Delete</button>
+                    </a>
                 </td>
             </tr>
         {{/each}}

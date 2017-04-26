@@ -2,7 +2,8 @@
     <table class="table table-responsive table-bordered table-hover">
         <thead>
         <tr>
-            <th>Username</th>
+            <th>Email</th>
+            <th>FullName</th>
             <th>Ads Count</th>
             <th>Action</th>
         </tr>
@@ -10,11 +11,16 @@
         <tbody>
         {{#each users}}
             <tr>
+                <td><a href="/user/ads/{{this.id}}">{{this.email}}</a></td>
                 <td><a href="/user/ads/{{this.id}}">{{this.fullName}}</a></td>
                 <td><a href="/user/ads/{{this.id}}"><span class="badge">{{this.ads.length}}</span></a></td>
                 <td>
-                    <a href=""><button type="submit" class="btn btn-primary btn-xs">Edit</button></a>
-                    <a href="/admin/user-delete/{{this.id}}"><button type="submit" class="btn btn-danger btn-xs">Delete</button></a>
+                    <a href="/admin/user-edit/{{this.id}}">
+                        <button type="submit" class="btn btn-primary btn-xs">Edit</button>
+                    </a>
+                    <a href="/admin/user-delete/{{this.id}}">
+                        <button type="submit" class="btn btn-danger btn-xs">Delete</button>
+                    </a>
                 </td>
             </tr>
         {{/each}}
