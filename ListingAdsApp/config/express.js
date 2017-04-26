@@ -32,7 +32,7 @@ module.exports = (app, config) => {
     app.use(fileUpload());
 
     app.use((req, res, next) => {
-        if(req.user){
+        if (req.user) {
             res.locals.user = req.user;
         }
 

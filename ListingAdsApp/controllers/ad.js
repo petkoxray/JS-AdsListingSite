@@ -12,9 +12,9 @@ module.exports = {
         Ad.find({}).sort({date: 'desc'})
             .populate('author category town')
             .then(ads => {
-            Utils.adsReformat(ads);
-            res.render('ad/index', { ads: ads});
-        });
+                Utils.adsReformat(ads);
+                res.render('ad/index', {ads: ads});
+            });
     },
     indexPost: (req, res) => {
         let filter = req.body.option;
@@ -85,7 +85,7 @@ module.exports = {
         }
 
         if (errorMsg) {
-            res.render('ad/create', { error: errorMsg, categories: categories, towns: towns });
+            res.render('ad/create', {error: errorMsg, categories: categories, towns: towns});
             return;
         }
 
@@ -94,7 +94,7 @@ module.exports = {
         if (image) {
             let filenameAndExt = image.name;
             let index = filenameAndExt.lastIndexOf('.');
-            let filename = filenameAndExt.substr(0,index);
+            let filename = filenameAndExt.substr(0, index);
             let ext = filenameAndExt.substr(index);
             let finalName = filename + randomString.generate(7) + ext;
 
@@ -113,7 +113,7 @@ module.exports = {
             Town.findOne({name: adArgs.town}).then(town => {
                 adArgs.category = cat.id;
                 adArgs.town = town.id;
-                Ad.create(adArgs).then( ad => {
+                Ad.create(adArgs).then(ad => {
                     cat.ads.push(ad.id);
                     cat.save(err => {
                         if (err) console.log(err);
@@ -138,7 +138,7 @@ module.exports = {
     detailsGet: (req, res) => {
         let id = req.params.id;
 
-        Ad.findById(id).populate('author category town comments').then( ad => {
+        Ad.findById(id).populate('author category town comments').then(ad => {
             if (!req.user) {
                 res.render('ad/details', {ad: ad, isUserAuthorized: false, error: req.session.error});
                 delete req.session.error;
@@ -157,14 +157,14 @@ module.exports = {
         let id = req.params.id;
 
         Ad.findById(id).then(ad => {
-            let username = 'Anonymous';
+            let username = '(Guest) ' + req.body.username;
             if (req.isAuthenticated()) {
                 username = req.user.fullName;
             }
             let content = req.body.comment;
 
             if (content) {
-                Comment.create({username: username,content: content, ad: ad.id}).then(comment => {
+                Comment.create({username: username, content: content, ad: ad.id}).then(comment => {
                     ad.comments.push(comment);
                     ad.save(err => {
                         if (err) console.log(err);
@@ -178,13 +178,13 @@ module.exports = {
         });
     },
 
-    editGet: (req ,res) => {
+    editGet: (req, res) => {
         let id = req.params.id;
 
-        Ad.findById(id).populate('author category town').then( ad => {
+        Ad.findById(id).populate('author category town').then(ad => {
             req.user.isInRole('Admin').then(isAdmin => {
                 if (isAdmin || req.user.isAuthor(ad)) {
-                    res.render('ad/edit', {ad:ad , error: req.session.error});
+                    res.render('ad/edit', {ad: ad, error: req.session.error});
                     delete req.session.error;
                     return;
                 }
@@ -220,11 +220,14 @@ module.exports = {
                         res.redirect(`/ad/edit/${id}`);
                     } else {
                         Ad.update({_id: id},
-                            {$set:
-                                {title: adArgs.title,
+                            {
+                                $set: {
+                                    title: adArgs.title,
                                     price: adArgs.price,
                                     content: adArgs.content,
-                                    phone: adArgs.phone}})
+                                    phone: adArgs.phone
+                                }
+                            })
                             .then(updateStatus => {
                                 res.redirect(`/ad/details/${id}`);
                             });
@@ -236,10 +239,10 @@ module.exports = {
         });
     },
 
-    deleteGet: (req , res) => {
+    deleteGet: (req, res) => {
         let id = req.params.id;
 
-        Ad.findById(id).populate('author category town').then( ad => {
+        Ad.findById(id).populate('author category town').then(ad => {
             req.user.isInRole('Admin').then(isAdmin => {
                 if (isAdmin || req.user.isAuthor(ad)) {
                     res.render('ad/delete', ad);
@@ -259,42 +262,43 @@ module.exports = {
                     Ad.findByIdAndRemove(id)
                         .populate('author category comments town')
                         .then(ad => {
-                        let author = ad.author;
-                        let category = ad.category;
-                        let comments = ad.comments;
-                        let town = ad.town;
-                        let authorIndex = author.ads.indexOf(ad.id);
-                        let categoryIndex = category.ads.indexOf(ad.id);
-                        let townIndex = town.ads.indexOf(ad.id);
-                        let errMsg = '';
+                            let author = ad.author;
+                            let category = ad.category;
+                            let comments = ad.comments;
+                            let town = ad.town;
+                            let authorIndex = author.ads.indexOf(ad.id);
+                            let categoryIndex = category.ads.indexOf(ad.id);
+                            let townIndex = town.ads.indexOf(ad.id);
+                            let errMsg = '';
 
-                        if (authorIndex < 0) {
-                            errMsg = 'Ad was not found for author';
-                            res.render('ad/delete', {error: errMsg})
-                        } else if (townIndex < 0) {
-                            errMsg = 'Ad was not found for town';
-                            res.render('ad/delete', {error: errMsg})
-                        } else if (categoryIndex < 0) {
-                            errMsg = 'Ad was not found for category';
-                            res.render('ad/delete', {error: errMsg})
-                        } else {
-                            comments.forEach(comment => {
-                               Comment.findByIdAndRemove(comment.id).then(update => {});
-                            });
-                            category.ads.splice(categoryIndex,1);
-                            category.save(err => {
-                                if (err) console.log(err);
-                            });
-                            town.ads.splice(townIndex,1);
-                            town.save(err => {
-                                if (err) console.log(err);
-                            });
-                            author.ads.splice(authorIndex, 1);
-                            author.save().then(() => {
-                                res.redirect('/');
-                            });
-                        }
-                    });
+                            if (authorIndex < 0) {
+                                errMsg = 'Ad was not found for author';
+                                res.render('ad/delete', {error: errMsg})
+                            } else if (townIndex < 0) {
+                                errMsg = 'Ad was not found for town';
+                                res.render('ad/delete', {error: errMsg})
+                            } else if (categoryIndex < 0) {
+                                errMsg = 'Ad was not found for category';
+                                res.render('ad/delete', {error: errMsg})
+                            } else {
+                                comments.forEach(comment => {
+                                    Comment.findByIdAndRemove(comment.id).then(update => {
+                                    });
+                                });
+                                category.ads.splice(categoryIndex, 1);
+                                category.save(err => {
+                                    if (err) console.log(err);
+                                });
+                                town.ads.splice(townIndex, 1);
+                                town.save(err => {
+                                    if (err) console.log(err);
+                                });
+                                author.ads.splice(authorIndex, 1);
+                                author.save().then(() => {
+                                    res.redirect('/');
+                                });
+                            }
+                        });
                     return;
                 }
                 res.redirect('/');

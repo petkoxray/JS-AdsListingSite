@@ -15,13 +15,13 @@ let userSchema = mongoose.Schema(
     }
 );
 
-userSchema.method ({
+userSchema.method({
     authenticate: function (password) {
-       let inputPasswordHash = encryption.hashPassword(password, this.salt);
-       let isSamePasswordHash = inputPasswordHash === this.passwordHash;
+        let inputPasswordHash = encryption.hashPassword(password, this.salt);
+        let isSamePasswordHash = inputPasswordHash === this.passwordHash;
 
-       return isSamePasswordHash;
-   },
+        return isSamePasswordHash;
+    },
 
     isAuthor: function (ad) {
         if (!ad) {
@@ -53,7 +53,7 @@ const User = mongoose.model('User', userSchema);
 
 module.exports = User;
 
-module.exports.initialize =  () => {
+module.exports.initialize = () => {
     let email = 'admin@abv.bg';
 
     User.findOne({email: email}).then(admin => {

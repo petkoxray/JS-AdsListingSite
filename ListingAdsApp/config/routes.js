@@ -44,10 +44,10 @@ module.exports = (app) => {
     app.get('/town/:id', townController.town);
 
     app.get('/admin', isAdministrator, adminController.index);
-    app.get('/admin/ads',isAdministrator, adminController.adsGet);
+    app.get('/admin/ads', isAdministrator, adminController.adsGet);
 
     app.get('/admin/categories', isAdministrator, adminController.categoriesGet);
-    app.post('/admin/categories', isAdministrator ,adminController.categoriesPost);
+    app.post('/admin/categories', isAdministrator, adminController.categoriesPost);
     app.get('/admin/category-delete/:id', isAdministrator, adminController.categoryDeleteGet);
     app.post('/admin/category-delete/:id', isAdministrator, adminController.categoryDeletePost);
 
@@ -66,7 +66,7 @@ function authorize(req, res, next) {
     if (req.isAuthenticated())
         return next();
 
-        res.redirect('/user/login');
+    res.redirect('/user/login');
 }
 
 function isAdministrator(req, res, next) {

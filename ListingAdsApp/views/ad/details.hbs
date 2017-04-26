@@ -21,7 +21,6 @@
                         <a class="btn btn-success btn-xs" href="/ad/edit/{{ad.id}}">Edit &raquo;</a>
                         <a class="btn btn-danger btn-xs" href="/ad/delete/{{ad.id}}">Delete &raquo;</a>
                     {{/if}}
-                    <a class="btn btn-default btn-xs" href="/">Back &raquo;</a>
                 </div>
             </footer>
 
@@ -31,6 +30,11 @@
                 <div class="row">
                     <div class="col-md-12">
                         <form action="" method="POST" id="commentform">
+                            {{#unless user}}
+                            <div id="comment-name" class="form-row">
+                                <input type = "text" placeholder = "Name (required)" name = "username"  id = "name" >
+                            </div><br>
+                            {{/unless}}
                             <div id="comment-message" class="form-row">
                                 <textarea rows="3" class="form-control" name = "comment" minlength="7" placeholder = "Message" id = "comment" required ></textarea>
                                 <br>

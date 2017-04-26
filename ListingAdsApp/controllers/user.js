@@ -9,7 +9,7 @@ module.exports = {
         res.render('user/register');
     },
 
-    registerPost:(req, res) => {
+    registerPost: (req, res) => {
         let registerArgs = req.body;
 
         User.findOne({email: registerArgs.email}).then(user => {
@@ -68,7 +68,7 @@ module.exports = {
     loginPost: (req, res) => {
         let loginArgs = req.body;
         User.findOne({email: loginArgs.email}).then(user => {
-            if (!user ||!user.authenticate(loginArgs.password)) {
+            if (!user || !user.authenticate(loginArgs.password)) {
                 let errorMsg = 'Either username or password is invalid!';
                 loginArgs.error = errorMsg;
                 res.render('user/login', loginArgs);
@@ -98,11 +98,11 @@ module.exports = {
         });
     },
 
-    detailsPost: (req , res) => {
+    detailsPost: (req, res) => {
         let id = req.user.id;
         let userArgs = req.body;
 
-        User.update({_id: id},{$set: {fullName: userArgs.fullName}})
+        User.update({_id: id}, {$set: {fullName: userArgs.fullName}})
             .then(updateStatus => {
                 res.redirect('/user/details/')
             });
@@ -113,8 +113,8 @@ module.exports = {
             .populate('author category town')
             .then(ads => {
                 Utils.adsReformat(ads);
-            res.render('user/myads', {ads: ads})
-        });
+                res.render('user/myads', {ads: ads})
+            });
     },
 
     userAdsGet: (req, res) => {
@@ -124,7 +124,7 @@ module.exports = {
             .populate('author category town')
             .then(ads => {
                 Utils.adsReformat(ads);
-            res.render('user/ads', {ads: ads})
-        });
+                res.render('user/ads', {ads: ads})
+            });
     }
 };

@@ -10,14 +10,14 @@ function initializeRole(roleName) {
     });
 }
 
-let roleSchema = mongoose.Schema (
+let roleSchema = mongoose.Schema(
     {
-        name: { type: String, required: true, unique: true},
+        name: {type: String, required: true, unique: true},
         users: [{type: ObjectId, ref: 'User'}]
     }
 );
 
-let Role = mongoose.model('Role',roleSchema);
+let Role = mongoose.model('Role', roleSchema);
 
 module.exports.initialize = () => {
     initializeRole('User');
