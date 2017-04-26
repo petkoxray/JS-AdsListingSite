@@ -9,38 +9,38 @@ const fileUpload = require('express-fileupload');
 const randomstring = require('randomstring');
 
 module.exports = (app, config) => {
-    // View engine setup.
-    app.set('views', path.join(config.rootFolder, '/views'));
-    app.set('view engine', 'hbs');
+  // View engine setup.
+  app.set('views', path.join(config.rootFolder, '/views'));
+  app.set('view engine', 'hbs');
 
-    // This set up which is the parser for the request's data.
-    app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({extended: true}));
-    app.use(expressValidator());
+  // This set up which is the parser for the request's data.
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({extended: true}));
+  app.use(expressValidator());
 
-    // We will use cookies.
-    app.use(cookieParser());
+  // We will use cookies.
+  app.use(cookieParser());
 
-    // Session is storage for cookies, which will be de/encrypted with that 'secret' key.
-    app.use(session({secret: 's3cr3t5tr1ng', resave: false, saveUninitialized: false}));
+  // Session is storage for cookies, which will be de/encrypted with that 'secret' key.
+  app.use(session({secret: 's3cr3t5tr1ng', resave: false, saveUninitialized: false}));
 
-    // For user validation we will use passport module.
-    app.use(passport.initialize());
-    app.use(passport.session());
+  // For user validation we will use passport module.
+  app.use(passport.initialize());
+  app.use(passport.session());
 
-    //user express fileupload to handle multipart from data
-    app.use(fileUpload());
+  //user express fileupload to handle multipart from data
+  app.use(fileUpload());
 
-    app.use((req, res, next) => {
-        if (req.user) {
-            res.locals.user = req.user;
-        }
+  app.use((req, res, next) => {
+    if (req.user) {
+      res.locals.user = req.user;
+    }
 
-        next();
-    });
+    next();
+  });
 
-    // This makes the content in the "public" folder accessible for every user.
-    app.use(express.static(path.join(config.rootFolder, 'public')));
+  // This makes the content in the "public" folder accessible for every user.
+  app.use(express.static(path.join(config.rootFolder, 'public')));
 };
 
 

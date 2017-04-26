@@ -2,24 +2,24 @@ const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
 module.exports = (config) => {
-    mongoose.connect(config.connectionString);
+  mongoose.connect(config.connectionString);
 
-    let database = mongoose.connection;
-    database.once('open', (error) => {
-        if (error) {
-            console.log(error);
-            return;
-        }
+  let database = mongoose.connection;
+  database.once('open', (error) => {
+    if (error) {
+      console.log(error);
+      return;
+    }
 
-        console.log('MongoDB ready!')
-    });
+    console.log('MongoDB ready!')
+  });
 
-    require('./../models/Role').initialize();
-    require('./../models/User').initialize();
-    require('./../models/Category').initialize();
-    require('./../models/Town').initialize();
-    require('./../models/Ad');
-    require('./../models/Comment');
+  require('./../models/Role').initialize();
+  require('./../models/User').initialize();
+  require('./../models/Category').initialize();
+  require('./../models/Town').initialize();
+  require('./../models/Ad');
+  require('./../models/Comment');
 };
 
 
