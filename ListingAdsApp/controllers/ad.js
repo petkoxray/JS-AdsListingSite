@@ -29,7 +29,7 @@ module.exports = {
                             res.render('ad/index', {ads: Utils.adsReformat(ads)});
                         } else {
                             let error = `Sorry we didnt find ads in ${town.name}`;
-                            res.render('ad/index', {error: error})
+                            res.render('ad/index', {error: error});
                         }
                     } else {
                         let error = 'Sorry we didnt find ads that much your search';

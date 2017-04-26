@@ -48,11 +48,15 @@ module.exports = (app) => {
 
     app.get('/admin/categories', isAdministrator, adminController.categoriesGet);
     app.post('/admin/categories', isAdministrator, adminController.categoriesPost);
+    app.get('/admin/category-edit/:id', isAdministrator, adminController.categoryEditGet);
+    app.post('/admin/category-edit/:id', isAdministrator, adminController.categoryEditPost);
     app.get('/admin/category-delete/:id', isAdministrator, adminController.categoryDeleteGet);
     app.post('/admin/category-delete/:id', isAdministrator, adminController.categoryDeletePost);
 
     app.get('/admin/towns', isAdministrator, adminController.townsGet);
     app.post('/admin/towns', isAdministrator, adminController.townsPost);
+    app.get('/admin/town-edit/:id', isAdministrator, adminController.townEditGet);
+    app.post('/admin/town-edit/:id', isAdministrator, adminController.townEditPost);
     app.get('/admin/town-delete/:id', isAdministrator, adminController.townDeleteGet);
     app.post('/admin/town-delete/:id', isAdministrator, adminController.townDeletePost);
 

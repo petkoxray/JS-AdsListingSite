@@ -1,0 +1,44 @@
+<div class="container">
+    <form class="form-horizontal" method="POST" action="/admin/category-edit/{{category.id}}">
+        <fieldset>
+            <legend>Edit Category</legend>
+
+            <div class="form-group">
+                <div class="col-sm-4 ">
+                    <input type="text" class="form-control" id="categoryName" placeholder="Category Name" value="{{category.name}}" name="name" required >
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <button type="submit"class="btn btn-success">Edit</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+
+
+    <table class="table table-responsive table-hover table-bordered">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Town</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#each ads}}
+            <tr>
+                <td><a href="/ad/details/{{id}}">{{title}}</a></td>
+                <td>{{author.fullName}}</td>
+                <td><a href="/category/{{town.id}}">{{town.name}}</a></td>
+                <td>
+                    <a href="/ad/edit/{{id}}"><button type="submit" class="btn btn-primary btn-xs">Edit</button></a>
+                    <a href="/ad/delete/{{id}}"><button type="submit" class="btn btn-danger btn-xs">Delete</button></a>
+                </td>
+            </tr>
+        {{/each}}
+        </tbody>
+    </table>
+</div>
