@@ -8,7 +8,7 @@ const Comment = mongoose.model('Comment');
 
 module.exports = {
     index: (req, res) => {
-        res.render('admin/index')
+        res.render('admin/index');
     },
 
     adsGet: (req, res) => {

@@ -31,11 +31,11 @@ module.exports = (app) => {
     app.get('/ad/details/:id', adController.detailsGet);
     app.post('/ad/details/:id', adController.detailsPost);
 
-    app.get('/ad/edit/:id', adController.editGet);
-    app.post('/ad/edit/:id', adController.editPost);
+    app.get('/ad/edit/:id', authorize, adController.editGet);
+    app.post('/ad/edit/:id', authorize, adController.editPost);
 
-    app.get('/ad/delete/:id', adController.deleteGet);
-    app.post('/ad/delete/:id', adController.deletePost);
+    app.get('/ad/delete/:id', authorize, adController.deleteGet);
+    app.post('/ad/delete/:id', authorize, adController.deletePost);
 
     app.get('/category', categoryController.index);
     app.get('/category/:id', categoryController.category);

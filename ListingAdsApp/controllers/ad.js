@@ -180,10 +180,6 @@ module.exports = {
 
     editGet: (req ,res) => {
         let id = req.params.id;
-        if (!req.isAuthenticated()) {
-            res.redirect('/');
-            return;
-        }
 
         Ad.findById(id).populate('author category town').then( ad => {
             req.user.isInRole('Admin').then(isAdmin => {
@@ -199,11 +195,6 @@ module.exports = {
     },
 
     editPost: (req, res) => {
-        if (!req.isAuthenticated()) {
-            res.redirect('/user/login');
-            return;
-        }
-
         let id = req.params.id;
 
         Ad.findById(id).populate('author').then(ad => {
@@ -248,11 +239,6 @@ module.exports = {
     deleteGet: (req , res) => {
         let id = req.params.id;
 
-        if (!req.isAuthenticated()) {
-            res.redirect('/');
-            return;
-        }
-
         Ad.findById(id).populate('author category town').then( ad => {
             req.user.isInRole('Admin').then(isAdmin => {
                 if (isAdmin || req.user.isAuthor(ad)) {
@@ -265,12 +251,8 @@ module.exports = {
     },
 
     deletePost: (req, res) => {
-        if (!req.isAuthenticated()) {
-            res.redirect('/');
-            return;
-        }
-
         let id = req.params.id;
+
         Ad.findById(id).populate('author').then(ad => {
             req.user.isInRole('Admin').then(isAdmin => {
                 if (isAdmin || req.user.isAuthor(ad)) {
