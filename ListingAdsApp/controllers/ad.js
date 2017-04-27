@@ -108,30 +108,11 @@ module.exports = {
     }
 
     adArgs.author = req.user.id;
+    adArgs.comments = [];
 
-    Category.findOne({name: adArgs.category}).then(cat => {
-      Town.findOne({name: adArgs.town}).then(town => {
-        adArgs.category = cat.id;
-        adArgs.town = town.id;
-        Ad.create(adArgs).then(ad => {
-          cat.ads.push(ad.id);
-          cat.save(err => {
-            if (err) console.log(err);
-          });
-          town.ads.push(ad.id);
-          town.save(err => {
-            if (err) console.log(err);
-          });
-          req.user.ads.push(ad.id);
-          req.user.save(err => {
-            if (err) {
-              res.redirect('/', {err: err.message})
-            } else {
-              res.redirect('/ad/details/' + ad.id)
-            }
-          });
-        });
-      });
+    Ad.create(adArgs).then(ad => {
+      ad.createAd();
+      res.redirect('/ad/' + ad.id);
     });
   },
 
@@ -259,49 +240,11 @@ module.exports = {
     Ad.findById(id).populate('author').then(ad => {
       req.user.isInRole('Admin').then(isAdmin => {
         if (isAdmin || req.user.isAuthor(ad)) {
-          Ad.findByIdAndRemove(id)
-            .populate('author category comments town')
-            .then(ad => {
-              let author = ad.author;
-              let category = ad.category;
-              let comments = ad.comments;
-              let town = ad.town;
-              let authorIndex = author.ads.indexOf(ad.id);
-              let categoryIndex = category.ads.indexOf(ad.id);
-              let townIndex = town.ads.indexOf(ad.id);
-              let errMsg = '';
-
-              if (authorIndex < 0) {
-                errMsg = 'Ad was not found for author';
-                res.render('ad/delete', {error: errMsg})
-              } else if (townIndex < 0) {
-                errMsg = 'Ad was not found for town';
-                res.render('ad/delete', {error: errMsg})
-              } else if (categoryIndex < 0) {
-                errMsg = 'Ad was not found for category';
-                res.render('ad/delete', {error: errMsg})
-              } else {
-                comments.forEach(comment => {
-                  Comment.findByIdAndRemove(comment.id).then(update => {
-                  });
-                });
-                category.ads.splice(categoryIndex, 1);
-                category.save(err => {
-                  if (err) console.log(err);
-                });
-                town.ads.splice(townIndex, 1);
-                town.save(err => {
-                  if (err) console.log(err);
-                });
-                author.ads.splice(authorIndex, 1);
-                author.save().then(() => {
-                  res.redirect('/');
-                });
-              }
+          Ad.findByIdAndRemove(id).then(ad => {
+              ad.deleteAd();
+              res.redirect('/');
             });
-          return;
         }
-        res.redirect('/');
       });
     });
   },

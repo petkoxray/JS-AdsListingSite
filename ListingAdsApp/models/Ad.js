@@ -17,6 +17,31 @@ let adSchema = mongoose.Schema(
 );
 
 adSchema.method({
+  createAd: function () {
+    let User = mongoose.model('User');
+    User.findById(this.author).then(user => {
+      user.ads.push(this.id);
+      user.save();
+    });
+
+    let Category = mongoose.model('Category');
+    Category.findById(this.category).then(category => {
+      if (category) {
+        category.ads.push(this.id);
+        category.save();
+      }
+    });
+
+    let Town = mongoose.model('Town');
+    Town.findById(this.town).then(town => {
+      if (town) {
+        town.ads.push(this.id);
+        town.save();
+      }
+    });
+
+  },
+
   deleteAd: function () {
     let User = mongoose.model('User');
     User.findById(this.author).then(user => {
