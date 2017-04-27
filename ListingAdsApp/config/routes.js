@@ -77,11 +77,11 @@ function authorize(req, res, next) {
 
 function isAdministrator(req, res, next) {
   if (req.isAuthenticated()) {
-    req.user.isInRole('Admin').then(isAdmin => {
-      if (isAdmin)
-        return next();
+    if (req.user.isInRole('Admin')) {
+      next();
+    } else {
       res.redirect('/');
-    });
+    }
   } else {
     res.redirect('/user/login');
   }

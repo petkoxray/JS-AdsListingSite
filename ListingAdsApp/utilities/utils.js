@@ -10,4 +10,13 @@ module.exports = {
     });
     return ads;
   },
+
+  adsTitleReformat: function (ads) {
+    ads.forEach(ad => {
+      if (ad.title.length > 10) {
+        ad.title = ad.title.substr(0, 10) + '...';
+      }
+    });
+    return ads;
+  },
 };

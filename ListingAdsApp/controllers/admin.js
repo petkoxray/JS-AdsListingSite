@@ -3,7 +3,6 @@ const Ad = mongoose.model('Ad');
 const Category = mongoose.model('Category');
 const Town = mongoose.model('Town');
 const User = mongoose.model('User');
-const Role = mongoose.model('Role');
 const Comment = mongoose.model('Comment');
 
 module.exports = {
@@ -43,13 +42,13 @@ module.exports = {
         if (category || !categoryArgs.name || !regexCat.test(categoryArgs.name)) {
           errMsg = 'Category name is invalid or category with that name already exists!';
           req.session.error = errMsg;
-        res.redirect('categories');
+          res.redirect('categories');
         } else {
           Category.create(categoryArgs).then(cat => {
             res.redirect('categories');
-        });
-      }
-    });
+          });
+        }
+      });
   },
 
   categoryDeleteGet: (req, res) => {
@@ -119,15 +118,15 @@ module.exports = {
       .then(category => {
         let regexCategory = /^[A-Z][a-z\s]+$/;
 
-      if (category || !regexCategory.test(name)) {
-        req.session.error = 'Category with that name already exist or category name is invalid!';
-        res.redirect(`/admin/category-edit/${id}`);
-      } else {
-        Category.update({_id: id}, {$set: {name: name}}).then(category => {
-          res.redirect('/admin/category-edit/' + id);
-        });
-      }
-    });
+        if (category || !regexCategory.test(name)) {
+          req.session.error = 'Category with that name already exist or category name is invalid!';
+          res.redirect(`/admin/category-edit/${id}`);
+        } else {
+          Category.update({_id: id}, {$set: {name: name}}).then(category => {
+            res.redirect('/admin/category-edit/' + id);
+          });
+        }
+      });
   },
 
   townsGet: (req, res) => {
@@ -272,18 +271,8 @@ module.exports = {
   userDeletePost: (req, res) => {
     let id = req.params.id;
     User.findByIdAndRemove(id)
-      .populate('ads roles')
+      .populate('ads')
       .then(user => {
-        let roles = user.roles;
-        roles.forEach(role => {
-          let roleIndex = role.users.indexOf(user.id);
-          role.users.splice(roleIndex, 1);
-          role.save(err => {
-            if (err) {
-              console.log(err);
-            }
-          });
-        });
         let ads = user.ads;
         if (ads.length !== 0) {
           ads.forEach(ad => {
