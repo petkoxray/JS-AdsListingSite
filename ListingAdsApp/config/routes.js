@@ -3,7 +3,7 @@ const homeController = require('./../controllers/home');
 const adController = require('./../controllers/ad');
 const categoryController = require('./../controllers/category');
 const townController = require('./../controllers/town');
-const adminController = require('./../controllers/admin');
+const adminController = require('./../controllers/admin/admin');
 
 module.exports = (app) => {
   app.get('/', homeController.index);
@@ -57,28 +57,27 @@ module.exports = (app) => {
     }
   });
 
-  app.get('/admin', adminController.index);
-  app.get('/admin/ads', adminController.adsGet);
+  app.get('/admin/ads', adminController.ads.adsGet);
 
-  app.get('/admin/categories', adminController.categoriesGet);
-  app.post('/admin/categories', adminController.categoriesPost);
-  app.get('/admin/category-edit/:id', adminController.categoryEditGet);
-  app.post('/admin/category-edit/:id', adminController.categoryEditPost);
-  app.get('/admin/category-delete/:id', adminController.categoryDeleteGet);
-  app.post('/admin/category-delete/:id', adminController.categoryDeletePost);
+  app.get('/admin/categories', adminController.category.categoriesGet);
+  app.post('/admin/categories', adminController.category.categoriesPost);
+  app.get('/admin/category-edit/:id', adminController.category.categoryEditGet);
+  app.post('/admin/category-edit/:id', adminController.category.categoryEditPost);
+  app.get('/admin/category-delete/:id', adminController.category.categoryDeleteGet);
+  app.post('/admin/category-delete/:id', adminController.category.categoryDeletePost);
 
-  app.get('/admin/towns', adminController.townsGet);
-  app.post('/admin/towns', adminController.townsPost);
-  app.get('/admin/town-edit/:id', adminController.townEditGet);
-  app.post('/admin/town-edit/:id', adminController.townEditPost);
-  app.get('/admin/town-delete/:id', adminController.townDeleteGet);
-  app.post('/admin/town-delete/:id', adminController.townDeletePost);
+  app.get('/admin/towns', adminController.town.townsGet);
+  app.post('/admin/towns', adminController.town.townsPost);
+  app.get('/admin/town-edit/:id', adminController.town.townEditGet);
+  app.post('/admin/town-edit/:id', adminController.town.townEditPost);
+  app.get('/admin/town-delete/:id', adminController.town.townDeleteGet);
+  app.post('/admin/town-delete/:id', adminController.town.townDeletePost);
 
-  app.get('/admin/users', adminController.usersGet);
-  app.get('/admin/user-edit/:id', adminController.userEditGet);
-  app.post('/admin/user-edit/:id', adminController.userEditPost);
-  app.get('/admin/user-delete/:id', adminController.userDeleteGet);
-  app.post('/admin/user-delete/:id', adminController.userDeletePost);
+  app.get('/admin/users', adminController.user.usersGet);
+  app.get('/admin/user-edit/:id', adminController.user.userEditGet);
+  app.post('/admin/user-edit/:id', adminController.user.userEditPost);
+  app.get('/admin/user-delete/:id', adminController.user.userDeleteGet);
+  app.post('/admin/user-delete/:id', adminController.user.userDeletePost);
 
 };
 
