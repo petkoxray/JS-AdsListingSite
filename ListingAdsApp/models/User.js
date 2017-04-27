@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Role = mongoose.model('Role');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 const encryption = require('./../utilities/encryption');
 
@@ -10,7 +11,7 @@ let userSchema = mongoose.Schema(
     fullName: {type: String, required: true},
     salt: {type: String, required: true},
     ads: [{type: ObjectId, ref: 'Ad'}],
-    roles: [{type: String}]
+    roles: [{type: ObjectId, ref: 'Role'}]
   }
 );
 
@@ -32,17 +33,26 @@ userSchema.method({
     return this.id === id;
   },
 
-  isInRole: function (role) {
-    return this.roles.indexOf(role) !== -1;
+  isInRole: function (roleName) {
+    return Role.findOne({name: roleName}).then(role => {
+      if (!role) {
+        return false;
+      }
+
+      let isInRole = this.roles.indexOf(role.id) !== -1;
+      return isInRole;
+    });
   },
+  isAdmin: function () {
+    return this.user.email === 'admin@abv.bg';
+  },
+
 });
 
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
 
-//Creating default Admin User
-//email: admin@abv.bg / password: 1234
 module.exports.initialize = () => {
   let email = 'admin@abv.bg';
 
@@ -50,20 +60,34 @@ module.exports.initialize = () => {
     if (admin) {
       console.log('Admin is already created!');
     } else {
-      let salt = encryption.generateSalt();
-      let passwordHash = encryption.hashPassword('1234', salt);
+      Role.findOne({name: 'Admin'}).then(role => {
 
-      let adminUser = {
-        email: email,
-        fullName: 'Admin Adminov',
-        salt: salt,
-        passwordHash: passwordHash,
-        ads: [],
-        roles: ['Admin']
-      };
+        if (!role) {
+          return;
+        }
 
-      User.create(adminUser).then(adminUser => {
-        console.log('Admin user created!');
+        let salt = encryption.generateSalt();
+        let passwordHash = encryption.hashPassword('pass', salt);
+
+        let adminUser = {
+          email: email,
+          fullName: 'Admin Adminov',
+          salt: salt,
+          passwordHash: passwordHash,
+          roles: [role.id],
+          ads: []
+        };
+
+        User.create(adminUser).then(adminUser => {
+          role.users.push(adminUser.id);
+          role.save(err => {
+            if (err) {
+              console.log('Admin user error!')
+            } else {
+              console.log('Admin seeded successfully!')
+            }
+          });
+        });
       });
     }
   });

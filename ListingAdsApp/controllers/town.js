@@ -3,7 +3,7 @@ const Utils = require('./../utilities/utils');
 
 module.exports = {
   index: (req, res) => {
-    res.render('town/index');
+    res.render('town/index')
   },
 
   town: (req, res) => {
