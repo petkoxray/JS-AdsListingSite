@@ -35,17 +35,14 @@ userSchema.method({
   isInRole: function (role) {
     return this.roles.indexOf(role) !== -1;
   },
-
-  isAdmin: function () {
-    return this.user.roles.indexOf('Admin') !== -1;
-  },
-
 });
 
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
 
+//Creating default Admin User
+//email: admin@abv.bg / password: 1234
 module.exports.initialize = () => {
   let email = 'admin@abv.bg';
 
@@ -54,7 +51,7 @@ module.exports.initialize = () => {
       console.log('Admin is already created!');
     } else {
       let salt = encryption.generateSalt();
-      let passwordHash = encryption.hashPassword('pass', salt);
+      let passwordHash = encryption.hashPassword('1234', salt);
 
       let adminUser = {
         email: email,

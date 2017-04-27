@@ -273,8 +273,8 @@ module.exports = {
               res.render('ad/delete', {error: errMsg})
             } else {
               comments.forEach(comment => {
-                Comment.findByIdAndRemove(comment.id).then(update => {
-                });
+                Comment.findByIdAndRemove(comment.id)
+                  .then(update => {});
               });
               category.ads.splice(categoryIndex, 1);
               category.save(err => {
