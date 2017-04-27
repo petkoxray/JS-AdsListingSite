@@ -4,6 +4,8 @@ const Category = mongoose.model('Category');
 const Town = mongoose.model('Town');
 const User = mongoose.model('User');
 const Comment = mongoose.model('Comment');
+const Utils = require('./../utilities/utils');
+const ObjectId = mongoose.Types.ObjectId;
 
 module.exports = {
   index: (req, res) => {
@@ -15,15 +17,13 @@ module.exports = {
       .sort({date: 'desc'})
       .populate('author category town comments')
       .then(ads => {
-        ads.forEach(ads => {
-          ads.title = ads.title.substr(0, 10) + '...';
-        });
-        res.render('admin/ads', {ads: ads});
+        res.render('admin/ads', {ads: Utils.adsTitleReformat(ads)});
       });
   },
 
   categoriesGet: (req, res) => {
-    Category.find({}).sort({date: 'desc'})
+    Category.find({})
+      .sort({date: 'desc'})
       .populate('ads')
       .then(categories => {
         res.render('admin/categories',
@@ -75,26 +75,22 @@ module.exports = {
               let author = ad.author;
               let comments = ad.comments;
               let town = ad.town;
-              let authorIndex = author.ads.indexOf(ad.id);
-              let townIndex = town.ads.indexOf(ad.id);
 
               comments.forEach(comment => {
-                Comment.findByIdAndRemove(comment.id).then(update => {
-                });
+                Comment.findByIdAndRemove(comment.id).then(update => {});
               });
-              town.ads.splice(townIndex, 1);
-              town.save(err => {
-                if (err) console.log(err);
-              });
-              author.ads.splice(authorIndex, 1);
-              author.save().then(() => {
-                res.redirect('/admin/categories');
-              });
+
+              mongoose.connection.db.collection('users').update(
+                {_id: ObjectId(author.id)},
+                {$pull: {ads: {$in: [ObjectId(ad.id)]}}});
+              mongoose.connection.db.collection('towns').update(
+                {_id: ObjectId(town.id)},
+                {$pull: {ads: {$in: [ObjectId(ad.id)]}}});
             });
         });
-      } else {
-        res.redirect('/admin/categories');
       }
+
+      res.redirect('/admin/categories');
     });
   },
 
@@ -142,7 +138,6 @@ module.exports = {
     let errMsg = '';
 
     Town.findOne({name: townArgs.name}).then(town => {
-
       if (town || !townArgs.name || !regexTown.test(townArgs.name)) {
         errMsg = 'Town name is invalid or town with that name already exist!';
         req.session.error = errMsg;
@@ -214,23 +209,21 @@ module.exports = {
               let author = ad.author;
               let category = ad.category;
               let comments = ad.comments;
-              let authorIndex = author.ads.indexOf(ad.id);
-              let categoryIndex = category.ads.indexOf(ad.id);
 
               comments.forEach(comment => {
                 Comment.findByIdAndRemove(comment.id).then(update => {
                 });
               });
-              category.ads.splice(categoryIndex, 1);
-              category.save(err => {
-                if (err) console.log(err);
-              });
-              author.ads.splice(authorIndex, 1);
-              author.save().then(() => {
-                res.redirect('/admin/towns');
-              });
+
+              mongoose.connection.db.collection('users').update(
+                {_id: ObjectId(author.id)},
+                {$pull: {ads: {$in: [ObjectId(ad.id)]}}});
+              mongoose.connection.db.collection('categories').update(
+                {_id: ObjectId(category.id)},
+                {$pull: {ads: {$in: [ObjectId(ad.id)]}}});
             });
         });
+        res.redirect('/admin/towns/')
       });
   },
 
@@ -282,26 +275,23 @@ module.exports = {
                 let town = ad.town;
                 let category = ad.category;
                 let comments = ad.comments;
-                let townIndex = town.ads.indexOf(ad.id);
-                let categoryIndex = category.ads.indexOf(ad.id);
 
                 comments.forEach(comment => {
                   Comment.findByIdAndRemove(comment.id).then(update => {
                   });
                 });
-                category.ads.splice(categoryIndex, 1);
-                category.save(err => {
-                  if (err) console.log(err);
-                });
-                town.ads.splice(townIndex, 1);
-                town.save().then(() => {
-                  res.redirect('/admin/users');
-                });
+
+                mongoose.connection.db.collection('towns').update(
+                  {_id: ObjectId(town.id)},
+                  {$pull: {ads: {$in: [ObjectId(ad.id)]}}});
+                mongoose.connection.db.collection('categories').update(
+                  {_id: ObjectId(category.id)},
+                  {$pull: {ads: {$in: [ObjectId(ad.id)]}}});
               });
           });
-        } else {
-          res.redirect('/admin/users');
         }
+
+        res.redirect('/admin/users');
       });
   },
 };
