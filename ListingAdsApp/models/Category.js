@@ -17,6 +17,20 @@ let categorySchema = mongoose.Schema(
   }
 );
 
+categorySchema.method({
+  deleteCategory: function () {
+    let Ad = mongoose.model('Ad');
+    for (let ad of this.ads){
+      Ad.findById(ad).then(ad => {
+        ad.deleteAd();
+        ad.remove();
+      });
+    }
+  }
+});
+
+categorySchema.set('versionKey', false);
+
 let Category = mongoose.model('Category', categorySchema);
 
 module.exports = Category;

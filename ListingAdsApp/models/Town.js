@@ -17,6 +17,20 @@ let townSchema = mongoose.Schema(
   }
 );
 
+townSchema.method({
+  deleteTown: function () {
+    let Ad = mongoose.model('Ad');
+    for (let ad of this.ads){
+      Ad.findById(ad).then(ad => {
+        ad.deleteAd();
+        ad.remove();
+      });
+    }
+  }
+});
+
+townSchema.set('versionKey', false);
+
 let Town = mongoose.model('Town', townSchema);
 
 module.exports = Town;

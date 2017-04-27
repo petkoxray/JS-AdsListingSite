@@ -66,36 +66,9 @@ module.exports = {
   categoryDeletePost: (req, res) => {
     let id = req.params.id;
 
-    Category.findByIdAndRemove(id).populate('ads').then(category => {
-      let ads = category.ads;
-      if (ads.length !== 0) {
-        ads.forEach(ad => {
-          Ad.findByIdAndRemove(ad.id)
-            .populate('author town comments')
-            .then(ad => {
-              let author = ad.author;
-              let comments = ad.comments;
-              let town = ad.town;
-              let authorIndex = author.ads.indexOf(ad.id);
-              let townIndex = town.ads.indexOf(ad.id);
-
-              comments.forEach(comment => {
-                Comment.findByIdAndRemove(comment.id).then(update => {
-                });
-              });
-              town.ads.splice(townIndex, 1);
-              town.save(err => {
-                if (err) console.log(err);
-              });
-              author.ads.splice(authorIndex, 1);
-              author.save().then(() => {
-                res.redirect('/admin/categories');
-              });
-            });
-        });
-      } else {
-        res.redirect('/admin/categories');
-      }
+    Category.findOneAndRemove({_id: id}).then(category => {
+      category.deleteCategory();
+      res.redirect('/admin/categories');
     });
   },
 
@@ -199,40 +172,10 @@ module.exports = {
   townDeletePost: (req, res) => {
     let id = req.params.id;
 
-    Town.findByIdAndRemove(id)
-      .populate('ads')
-      .then(town => {
-        let ads = town.ads;
-        if (ads.length === 0) {
-          res.redirect('/admin/towns');
-          return;
-        }
-
-        ads.forEach(ad => {
-          Ad.findByIdAndRemove(ad.id)
-            .populate('author category comments')
-            .then(ad => {
-              let author = ad.author;
-              let category = ad.category;
-              let comments = ad.comments;
-              let authorIndex = author.ads.indexOf(ad.id);
-              let categoryIndex = category.ads.indexOf(ad.id);
-
-              comments.forEach(comment => {
-                Comment.findByIdAndRemove(comment.id).then(update => {
-                });
-              });
-              category.ads.splice(categoryIndex, 1);
-              category.save(err => {
-                if (err) console.log(err);
-              });
-              author.ads.splice(authorIndex, 1);
-              author.save().then(() => {
-                res.redirect('/admin/towns');
-              });
-            });
-        });
-      });
+    Town.findOneAndRemove({_id: id}).then(town => {
+      town.deleteTown();
+      res.redirect('/admin/towns');
+    });
   },
 
   usersGet: (req, res) => {
@@ -271,48 +214,10 @@ module.exports = {
 
   userDeletePost: (req, res) => {
     let id = req.params.id;
-    User.findByIdAndRemove(id)
-      .populate('ads roles')
-      .then(user => {
-        let roles = user.roles;
-        roles.forEach(role => {
-          let roleIndex = role.users.indexOf(user.id);
-          role.users.splice(roleIndex, 1);
-          role.save(err => {
-            if (err) {
-              console.log(err);
-            }
-          });
-        });
-        let ads = user.ads;
-        if (ads.length !== 0) {
-          ads.forEach(ad => {
-            Ad.findByIdAndRemove(ad.id)
-              .populate('category town comments')
-              .then(ad => {
-                let town = ad.town;
-                let category = ad.category;
-                let comments = ad.comments;
-                let townIndex = town.ads.indexOf(ad.id);
-                let categoryIndex = category.ads.indexOf(ad.id);
 
-                comments.forEach(comment => {
-                  Comment.findByIdAndRemove(comment.id).then(update => {
-                  });
-                });
-                category.ads.splice(categoryIndex, 1);
-                category.save(err => {
-                  if (err) console.log(err);
-                });
-                town.ads.splice(townIndex, 1);
-                town.save().then(() => {
-                  res.redirect('/admin/users');
-                });
-              });
-          });
-        } else {
-          res.redirect('/admin/users');
-        }
-      });
+    User.findOneAndRemove({_id: id}).then(user => {
+      user.deleteUser();
+      res.redirect('/admin/users');
+    })
   },
 };

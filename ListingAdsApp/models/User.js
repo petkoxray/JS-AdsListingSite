@@ -43,7 +43,26 @@ userSchema.method({
       return isInRole;
     });
   },
+
+  deleteUser: function () {
+    for (let role of this.roles){
+      Role.findById(role).then(role => {
+        role.users.remove(this.id);
+        role.save();
+      });
+    }
+
+    let Ad = mongoose.model('Ad');
+    for (let ad of this.ads){
+      Ad.findById(ad).then(ad => {
+        ad.deleteAd();
+        ad.remove();
+      });
+    }
+  },
 });
+
+userSchema.set('versionKey', false);
 
 const User = mongoose.model('User', userSchema);
 

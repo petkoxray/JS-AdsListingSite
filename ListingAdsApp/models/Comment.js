@@ -10,6 +10,8 @@ let commentSchema = mongoose.Schema(
   }
 );
 
+commentSchema.set('versionKey', false);
+
 let Comment = mongoose.model('Comment', commentSchema);
 
 module.exports = Comment;
