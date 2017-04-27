@@ -43,16 +43,14 @@ userSchema.method({
       return isInRole;
     });
   },
-  isAdmin: function () {
-    return this.user.email === 'admin@abv.bg';
-  },
-
 });
 
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
 
+//Admin User
+//Username: admin@abv.bg Password: 1234
 module.exports.initialize = () => {
   let email = 'admin@abv.bg';
 
@@ -67,7 +65,7 @@ module.exports.initialize = () => {
         }
 
         let salt = encryption.generateSalt();
-        let passwordHash = encryption.hashPassword('pass', salt);
+        let passwordHash = encryption.hashPassword('1234', salt);
 
         let adminUser = {
           email: email,

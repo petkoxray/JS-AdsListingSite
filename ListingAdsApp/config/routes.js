@@ -43,28 +43,42 @@ module.exports = (app) => {
   app.get('/town', townController.index);
   app.get('/town/:id', townController.town);
 
-  app.get('/admin', isAdministrator, adminController.index);
-  app.get('/admin/ads', isAdministrator, adminController.adsGet);
+  app.use((req, res, next) => {
+    if (req.isAuthenticated()){
+      req.user.isInRole('Admin').then(isAdmin=>{
+        if(isAdmin){
+          next();
+        } else{
+          res.redirect('/');
+        }
+      });
+    } else {
+      res.redirect('/user/login');
+    }
+  });
 
-  app.get('/admin/categories', isAdministrator, adminController.categoriesGet);
-  app.post('/admin/categories', isAdministrator, adminController.categoriesPost);
-  app.get('/admin/category-edit/:id', isAdministrator, adminController.categoryEditGet);
-  app.post('/admin/category-edit/:id', isAdministrator, adminController.categoryEditPost);
-  app.get('/admin/category-delete/:id', isAdministrator, adminController.categoryDeleteGet);
-  app.post('/admin/category-delete/:id', isAdministrator, adminController.categoryDeletePost);
+  app.get('/admin', adminController.index);
+  app.get('/admin/ads', adminController.adsGet);
 
-  app.get('/admin/towns', isAdministrator, adminController.townsGet);
-  app.post('/admin/towns', isAdministrator, adminController.townsPost);
-  app.get('/admin/town-edit/:id', isAdministrator, adminController.townEditGet);
-  app.post('/admin/town-edit/:id', isAdministrator, adminController.townEditPost);
-  app.get('/admin/town-delete/:id', isAdministrator, adminController.townDeleteGet);
-  app.post('/admin/town-delete/:id', isAdministrator, adminController.townDeletePost);
+  app.get('/admin/categories', adminController.categoriesGet);
+  app.post('/admin/categories', adminController.categoriesPost);
+  app.get('/admin/category-edit/:id', adminController.categoryEditGet);
+  app.post('/admin/category-edit/:id', adminController.categoryEditPost);
+  app.get('/admin/category-delete/:id', adminController.categoryDeleteGet);
+  app.post('/admin/category-delete/:id', adminController.categoryDeletePost);
 
-  app.get('/admin/users', isAdministrator, adminController.usersGet);
-  app.get('/admin/user-edit/:id', isAdministrator, adminController.userEditGet);
-  app.post('/admin/user-edit/:id', isAdministrator, adminController.userEditPost);
-  app.get('/admin/user-delete/:id', isAdministrator, adminController.userDeleteGet);
-  app.post('/admin/user-delete/:id', isAdministrator, adminController.userDeletePost);
+  app.get('/admin/towns', adminController.townsGet);
+  app.post('/admin/towns', adminController.townsPost);
+  app.get('/admin/town-edit/:id', adminController.townEditGet);
+  app.post('/admin/town-edit/:id', adminController.townEditPost);
+  app.get('/admin/town-delete/:id', adminController.townDeleteGet);
+  app.post('/admin/town-delete/:id', adminController.townDeletePost);
+
+  app.get('/admin/users', adminController.usersGet);
+  app.get('/admin/user-edit/:id', adminController.userEditGet);
+  app.post('/admin/user-edit/:id', adminController.userEditPost);
+  app.get('/admin/user-delete/:id', adminController.userDeleteGet);
+  app.post('/admin/user-delete/:id', adminController.userDeletePost);
 
 };
 
@@ -73,16 +87,4 @@ function authorize(req, res, next) {
     return next();
 
   res.redirect('/user/login');
-}
-
-function isAdministrator(req, res, next) {
-  if (req.isAuthenticated()) {
-    if (req.user.isInRole('Admin')) {
-      next();
-    } else {
-      res.redirect('/');
-    }
-  } else {
-    res.redirect('/user/login');
-  }
 }
