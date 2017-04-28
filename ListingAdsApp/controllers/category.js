@@ -1,4 +1,5 @@
 const Ad = require('mongoose').model('Ad');
+const Category = require('mongoose').model('Category');
 const Utils = require('./../utilities/utils');
 
 module.exports = {
@@ -15,8 +16,10 @@ module.exports = {
         if (ads[0]) {
           categoryName = ads[0].category.name;
         }
-
-        res.render('category/index', {ads: Utils.adsReformat(ads), categoryName: categoryName})
+        Category.find({}).then(categories => {
+          res.render('category/index',
+            {ads: Utils.adsReformat(ads), categoryName: categoryName,categories: categories});
+        });
       });
   }
 

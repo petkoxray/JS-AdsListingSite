@@ -1,3 +1,20 @@
+<div class="container body-content">
+    <div class="well well-sm">
+        <div class="row">
+            {{#each categories}}
+                <div class="col-md-1">
+                    <header>
+                    <span>
+                        <a href="/category/{{ this.id }}">
+                            {{ this.name }}({{ this.ads.length }})
+                        </a>
+                    </span>
+                    </header>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+</div>
 <div class="container">
     {{#if categoryName}}
         <h2>All ads in Category {{categoryName}}</h2>

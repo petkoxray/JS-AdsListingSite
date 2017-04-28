@@ -1,4 +1,5 @@
 const Ad = require('mongoose').model('Ad');
+const Town = require('mongoose').model('Town');
 const Utils = require('./../utilities/utils');
 
 module.exports = {
@@ -19,7 +20,10 @@ module.exports = {
           townName = ads[0].town.name;
         }
 
-        res.render('town/index', {ads: Utils.adsReformat(ads), townName: townName});
+        Town.find({}).then(towns => {
+          res.render('town/index',
+            {ads: Utils.adsReformat(ads), townName: townName,towns: towns});
+        });
       });
   }
 };
