@@ -112,7 +112,7 @@ module.exports = {
 
     Ad.create(adArgs).then(ad => {
       ad.createAd();
-      res.redirect('/ad/' + ad.id);
+      res.redirect('/ad/details/' + ad.id);
     });
   },
 

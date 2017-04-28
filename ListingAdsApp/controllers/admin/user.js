@@ -4,6 +4,11 @@ const encryption = require('../../utilities/encryption');
 module.exports = {
   usersGet: (req, res) => {
     User.find({}).sort({date: 'desc'}).populate('ads').then(users => {
+      users.forEach(user => {
+        user.isInRole('Admin').then(isAdmin => {
+          user.isAdministrator = isAdmin;
+        });
+      });
       res.render('admin/users', {users: users});
     });
   },

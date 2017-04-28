@@ -18,8 +18,10 @@
             <footer>
                 <div class="pull-right">
                     {{#if isUserAuthorized}}
-                        <a class="btn btn-success btn-xs" href="/ad/edit/{{ad.id}}">Edit &raquo;</a>
-                        <a class="btn btn-danger btn-xs" href="/ad/delete/{{ad.id}}">Delete &raquo;</a>
+                        <a class="btn btn-success btn-xs" href="/ad/edit/{{ad.id}}"><i class="fa fa-pencil fa-lg" aria-hidden="true"></i>
+                        </a>
+                        <a class="btn btn-danger btn-xs" href="/ad/delete/{{ad.id}}"><i class="fa fa-trash fa-lg" aria-hidden="true"></i>
+                        </a>
                     {{/if}}
                 </div>
             </footer>

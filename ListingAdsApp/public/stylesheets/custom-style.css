@@ -1,6 +1,6 @@
 .thumbnail-sma{
-    height: 65px;
-    width: 65px;
+    min-height: 70px;
+    height: 70px;
 }
 
 .thumbnail-smb{

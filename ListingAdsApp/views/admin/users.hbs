@@ -10,7 +10,7 @@
         </thead>
         <tbody>
         {{#each users}}
-            <tr>
+            <tr {{#if this.isAdministrator}}class="info" {{/if}}>
                 <td><a href="/user/ads/{{this.id}}">{{this.email}}</a></td>
                 <td><a href="/user/ads/{{this.id}}">{{this.fullName}}</a></td>
                 <td><a href="/user/ads/{{this.id}}"><span class="badge">{{this.ads.length}}</span></a></td>
