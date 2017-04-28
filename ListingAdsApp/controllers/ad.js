@@ -9,7 +9,7 @@ let categories;
 
 module.exports = {
   indexGet: (req, res) => {
-    Ad.find({}).sort({date: 'desc'})
+    Ad.find({})
       .populate('author category town')
       .then(ads => {
         Utils.adsReformat(ads);

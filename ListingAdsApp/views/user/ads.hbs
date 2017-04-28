@@ -2,8 +2,8 @@
     <div class="row">
         {{#each ads}}
             <div class="col-sm-6 col-md-4">
-                <div class="thumbnail">
-                    <img src="{{this.imagePath}}" alt="image" width="80px" class="img-responsive">
+                <div class="thumbnail thumbnail-smb" >
+                    <img src="{{this.imagePath}}" alt="image" width="80px" class="img-responsive thumbnail-sma">
                     <div class="caption">
                         <h3>{{this.title}}</h3>
                         <p><strong>Category:</strong> <a href="/category/{{this.category.id}}">{{this.category.name}}</a></p>
@@ -12,7 +12,7 @@
                         <p><strong>Author:</strong> <a href="/user/ads/{{this.author.id}}"> {{this.author.fullName}}</a></p>
                         <div class="clearfix">
                             <div class="price pull-left">{{this.content}}</div>
-                            <a href="/ad/details/{{this.id}}" class="btn btn-sm btn-default pull-right" role="button">Read more</a>
+                            <a href="/ad/details/{{this.id}}" class="btn btn-sm btn-default pull-right" role="button">More info</a>
                         </div>
                     </div>
                 </div>
