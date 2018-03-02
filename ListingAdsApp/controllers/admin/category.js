@@ -2,11 +2,11 @@ const Category = require('mongoose').model('Category');
 
 module.exports = {
   categoriesGet: (req, res) => {
-    Category.find({}).sort({date: 'desc'})
+    Category.find({}).sort({ date: 'desc' })
       .populate('ads')
       .then(categories => {
         res.render('admin/categories',
-          {categories: categories, error: req.session.error});
+          { categories: categories, error: req.session.error });
         delete req.session.error;
       });
   },
@@ -16,7 +16,7 @@ module.exports = {
     let regexCat = /^[A-Z][a-z\s]+$/;
     let errMsg = '';
 
-    Category.findOne({name: categoryArgs.name})
+    Category.findOne({ name: categoryArgs.name })
       .then(category => {
         if (category || !categoryArgs.name || !regexCat.test(categoryArgs.name)) {
           errMsg = 'Category name is invalid or category with that name already exists!';
@@ -33,18 +33,18 @@ module.exports = {
   categoryDeleteGet: (req, res) => {
     let id = req.params.id;
 
-    Category.findOne({_id: id})
-      .populate({path: 'ads', populate: {path: 'author category town'}})
+    Category.findOne({ _id: id })
+      .populate({ path: 'ads', populate: { path: 'author category town' } })
       .then(category => {
         let ads = category.ads;
-        res.render('admin/category-delete', {category: category, ads: ads});
+        res.render('admin/category-delete', { category: category, ads: ads });
       });
   },
 
   categoryDeletePost: (req, res) => {
     let id = req.params.id;
 
-    Category.findOneAndRemove({_id: id}).then(category => {
+    Category.findOneAndRemove({ _id: id }).then(category => {
       category.deleteCategory();
       res.redirect('/admin/categories');
     });
@@ -53,11 +53,11 @@ module.exports = {
   categoryEditGet: (req, res) => {
     let id = req.params.id;
 
-    Category.findOne({_id: id})
-      .populate({path: 'ads', populate: {path: 'author category town'}})
+    Category.findOne({ _id: id })
+      .populate({ path: 'ads', populate: { path: 'author category town' } })
       .then(category => {
         let ads = category.ads;
-        res.render('admin/category-edit', {category: category, ads: ads, error: req.session.error});
+        res.render('admin/category-edit', { category: category, ads: ads, error: req.session.error });
         delete req.session.error;
       });
   },
@@ -66,7 +66,7 @@ module.exports = {
     let id = req.params.id;
     let name = req.body.name;
 
-    Category.findOne({name: name})
+    Category.findOne({ name: name })
       .then(category => {
         let regexCategory = /^[A-Z][a-z\s]+$/;
 
@@ -74,7 +74,7 @@ module.exports = {
           req.session.error = 'Category with that name already exist or category name is invalid!';
           res.redirect(`/admin/category-edit/${id}`);
         } else {
-          Category.update({_id: id}, {$set: {name: name}}).then(category => {
+          Category.update({ _id: id }, { $set: { name: name } }).then(category => {
             res.redirect('/admin/category-edit/' + id);
           });
         }

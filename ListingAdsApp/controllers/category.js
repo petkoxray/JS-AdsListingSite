@@ -3,13 +3,15 @@ const Category = require('mongoose').model('Category');
 const Utils = require('./../utilities/utils');
 
 module.exports = {
+
   index: (req, res) => {
     res.render('category/index');
   },
+
   category: (req, res) => {
     let id = req.params.id;
-    Ad.find({category: id})
-      .sort({date: 'desc'})
+    Ad.find({ category: id })
+      .sort({ date: 'desc' })
       .populate('town author category')
       .then(ads => {
         let categoryName = '';
@@ -18,9 +20,8 @@ module.exports = {
         }
         Category.find({}).then(categories => {
           res.render('category/index',
-            {ads: Utils.adsReformat(ads), categoryName: categoryName,categories: categories});
+            { ads: Utils.adsReformat(ads), categoryName: categoryName, categories: categories });
         });
       });
   }
-
 };

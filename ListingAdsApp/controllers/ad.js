@@ -13,44 +13,45 @@ module.exports = {
       .populate('author category town')
       .then(ads => {
         Utils.adsReformat(ads);
-        res.render('ad/index', {ads: ads});
+        res.render('ad/index', { ads: ads });
       });
   },
+
   indexPost: (req, res) => {
     let filter = req.body.option;
     let search = Utils.searchReformat(req.body.search);
     if (filter === 'town') {
-      Town.findOne({name: search})
-        .populate({path: 'ads', populate: {path: 'author category town'}})
+      Town.findOne({ name: search })
+        .populate({ path: 'ads', populate: { path: 'author category town' } })
         .then(town => {
           if (town) {
             let ads = town.ads;
             if (ads.length > 0) {
-              res.render('ad/index', {ads: Utils.adsReformat(ads)});
+              res.render('ad/index', { ads: Utils.adsReformat(ads) });
             } else {
               let error = `Sorry we didnt find ads in ${town.name}`;
-              res.render('ad/index', {error: error});
+              res.render('ad/index', { error: error });
             }
           } else {
             let error = 'Sorry we didnt find ads that much your search';
-            res.render('ad/index', {error: error})
+            res.render('ad/index', { error: error })
           }
         });
     } else {
-      Category.findOne({name: search})
-        .populate({path: 'ads', populate: {path: 'author category town'}})
+      Category.findOne({ name: search })
+        .populate({ path: 'ads', populate: { path: 'author category town' } })
         .then(category => {
           if (category) {
             let ads = category.ads;
             if (ads.length > 0) {
-              res.render('ad/index', {ads: Utils.adsReformat(ads)});
+              res.render('ad/index', { ads: Utils.adsReformat(ads) });
             } else {
               let error = `Sorry we didnt find ads in ${category.name} category`;
-              res.render('ad/index', {error: error});
+              res.render('ad/index', { error: error });
             }
           } else {
             let error = 'Sorry we didnt find ads that much your search';
-            res.render('ad/index', {error: error});
+            res.render('ad/index', { error: error });
           }
         });
     }
@@ -61,7 +62,7 @@ module.exports = {
       categories = c;
       Town.find({}).then(t => {
         towns = t;
-        res.render('ad/create', {categories: c, towns: t});
+        res.render('ad/create', { categories: c, towns: t });
       });
     });
   },
@@ -85,7 +86,7 @@ module.exports = {
     }
 
     if (errorMsg) {
-      res.render('ad/create', {error: errorMsg, categories: categories, towns: towns});
+      res.render('ad/create', { error: errorMsg, categories: categories, towns: towns });
       return;
     }
 
@@ -121,14 +122,14 @@ module.exports = {
 
     Ad.findById(id).populate('author category town comments').then(ad => {
       if (!req.user) {
-        res.render('ad/details', {ad: ad, isUserAuthorized: false, error: req.session.error});
+        res.render('ad/details', { ad: ad, isUserAuthorized: false, error: req.session.error });
         delete req.session.error;
         return;
       }
 
       req.user.isInRole('Admin').then(isAdmin => {
         let isUserAuthorized = isAdmin || req.user.isAuthor(ad);
-        res.render('ad/details', {ad: ad, isUserAuthorized: isUserAuthorized, error: req.session.error});
+        res.render('ad/details', { ad: ad, isUserAuthorized: isUserAuthorized, error: req.session.error });
         delete req.session.error;
       });
     });
@@ -138,20 +139,21 @@ module.exports = {
     let id = req.params.id;
 
     Ad.findById(id).then(ad => {
-      let username = '(Guest) ' + req.body.username;
-      if (req.isAuthenticated()) {
-        username = req.user.fullName;
+      if (!req.isAuthenticated()) {
+        res.redirect('/')
       }
+
       let content = req.body.comment;
 
       if (content) {
-        Comment.create({username: username, content: content, ad: ad.id}).then(comment => {
-          ad.comments.push(comment);
-          ad.save(err => {
-            if (err) console.log(err);
+        Comment.create({ username: req.user.username, content: content, ad: ad.id })
+          .then(comment => {
+            ad.comments.push(comment);
+            ad.save(err => {
+              if (err) console.log(err);
+            });
+            res.redirect('/ad/details/' + ad.id);
           });
-          res.redirect('/ad/details/' + ad.id);
-        });
       } else {
         req.session.error = 'You should write something';
         res.redirect('/ad/details/' + ad.id);
@@ -165,7 +167,7 @@ module.exports = {
     Ad.findById(id).populate('author category town').then(ad => {
       req.user.isInRole('Admin').then(isAdmin => {
         if (isAdmin || req.user.isAuthor(ad)) {
-          res.render('ad/edit', {ad: ad, error: req.session.error});
+          res.render('ad/edit', { ad: ad, error: req.session.error });
           delete req.session.error;
           return;
         }
@@ -200,7 +202,7 @@ module.exports = {
             req.session.error = errorMsg;
             res.redirect(`/ad/edit/${id}`);
           } else {
-            Ad.update({_id: id},
+            Ad.update({ _id: id },
               {
                 $set: {
                   title: adArgs.title,
@@ -241,9 +243,9 @@ module.exports = {
       req.user.isInRole('Admin').then(isAdmin => {
         if (isAdmin || req.user.isAuthor(ad)) {
           Ad.findByIdAndRemove(id).then(ad => {
-              ad.deleteAd();
-              res.redirect('/');
-            });
+            ad.deleteAd();
+            res.redirect('/');
+          });
         }
       });
     });

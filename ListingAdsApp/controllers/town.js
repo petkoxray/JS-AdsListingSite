@@ -10,8 +10,8 @@ module.exports = {
   town: (req, res) => {
     let townId = req.params.id;
 
-    Ad.find({town: townId})
-      .sort({date: 'desc'})
+    Ad.find({ town: townId })
+      .sort({ date: 'desc' })
       .populate('author category town')
       .then(ads => {
         let townName = '';
@@ -22,7 +22,7 @@ module.exports = {
 
         Town.find({}).then(towns => {
           res.render('town/index',
-            {ads: Utils.adsReformat(ads), townName: townName,towns: towns});
+            { ads: Utils.adsReformat(ads), townName: townName, towns: towns });
         });
       });
   }

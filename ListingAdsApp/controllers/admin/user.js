@@ -3,22 +3,22 @@ const encryption = require('../../utilities/encryption');
 
 module.exports = {
   usersGet: (req, res) => {
-    User.find({}).sort({date: 'desc'}).populate('ads').then(users => {
+    User.find({}).sort({ date: 'desc' }).populate('ads').then(users => {
       users.forEach(user => {
         user.isInRole('Admin').then(isAdmin => {
           user.isAdministrator = isAdmin;
         });
       });
-      res.render('admin/users', {users: users});
+      res.render('admin/users', { users: users });
     });
   },
 
   userEditGet: (req, res) => {
     let userId = req.params.id;
 
-    User.findOne({_id: userId})
+    User.findOne({ _id: userId })
       .then(user => {
-        res.render('admin/user-edit', {user: user});
+        res.render('admin/user-edit', { user: user });
       });
   },
 
@@ -26,8 +26,9 @@ module.exports = {
     let id = req.params.id;
     let userArgs = req.body;
 
-    User.findOne({email: userArgs.email, _id: {$ne: id}}).then(user => {
+    User.findOne({ email: userArgs.email, _id: { $ne: id } }).then(user => {
       let errorMsg = '';
+      
       if (user) {
         errorMsg = 'User with the same email exists!';
       } else if (!userArgs.email) {
@@ -42,7 +43,7 @@ module.exports = {
         userArgs.error = errorMsg;
         res.render('admin/user-edit', userArgs);
       } else {
-        User.findOne({_id: id}).then(user => {
+        User.findOne({ _id: id }).then(user => {
           user.email = userArgs.email;
           user.fullName = userArgs.fullName;
 
@@ -66,17 +67,17 @@ module.exports = {
   },
 
   userDeleteGet: (req, res) => {
-    User.findOne({_id: req.params.id})
-      .populate({path: 'ads', populate: {path: 'author category town'}})
+    User.findOne({ _id: req.params.id })
+      .populate({ path: 'ads', populate: { path: 'author category town' } })
       .then(user => {
-        res.render('admin/user-delete', {user: user, ads: user.ads});
+        res.render('admin/user-delete', { user: user, ads: user.ads });
       });
   },
 
   userDeletePost: (req, res) => {
     let id = req.params.id;
 
-    User.findOneAndRemove({_id: id}).then(user => {
+    User.findOneAndRemove({ _id: id }).then(user => {
       user.deleteUser();
       res.redirect('/admin/users');
     })

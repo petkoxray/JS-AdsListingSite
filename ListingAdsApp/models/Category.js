@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 function initializeCategory(categoryName) {
-  let categoryData = {name: categoryName};
+  let categoryData = { name: categoryName };
   Category.findOne(categoryData).then(category => {
     if (!category) {
       Category.create(categoryData);
@@ -12,15 +12,15 @@ function initializeCategory(categoryName) {
 
 let categorySchema = mongoose.Schema(
   {
-    name: {type: String, required: true, unique: true},
-    ads: [{type: ObjectId, ref: 'Ad'}]
+    name: { type: String, required: true, unique: true },
+    ads: [{ type: ObjectId, ref: 'Ad' }]
   }
 );
 
 categorySchema.method({
   deleteCategory: function () {
     let Ad = mongoose.model('Ad');
-    for (let ad of this.ads){
+    for (let ad of this.ads) {
       Ad.findById(ad).then(ad => {
         ad.deleteAd();
         ad.remove();

@@ -1,9 +1,3 @@
-.thumbnail-sma{
-    min-height: 70px;
-    max-height: 70px;
-}
-
-.thumbnail-smb{
-    height: 330px;
-    width: 100%;
+.navbar-custom {
+    margin-bottom: 50px;
 }

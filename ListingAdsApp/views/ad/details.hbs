@@ -5,10 +5,20 @@
                 <img src="{{ad.imagePath}}" alt="image" width="250px" class="img-responsive">
                 <div class="caption">
                     <h3>{{ad.title}}</h3>
-                    <p><strong>Category:</strong> <a href="/category/{{ad.category.id}}">{{ad.category.name}}</a></p>
-                    <p><strong>Town:</strong> <a href="/town/{{ad.town.id}}"> {{ad  .town.name}}</a></p>
-                    <p><strong>Price:</strong> {{ad.price}} лева</p>
-                    <p><strong>Author:</strong> <a href="/user/ads/{{ad.author.id}}"> {{ad.author.fullName}}</a></p>
+                    <p>
+                        <strong>Category:</strong>
+                        <a href="/category/{{ad.category.id}}">{{ad.category.name}}</a>
+                    </p>
+                    <p>
+                        <strong>Town:</strong>
+                        <a href="/town/{{ad.town.id}}"> {{ad .town.name}}</a>
+                    </p>
+                    <p>
+                        <strong>Price:</strong> {{ad.price}} лева</p>
+                    <p>
+                        <strong>Author:</strong>
+                        <a href="/user/ads/{{ad.author.id}}"> {{ad.author.fullName}}</a>
+                    </p>
                     <div class="clearfix">
                         <div class="price pull-left">{{ad.content}}</div>
                     </div>
@@ -18,47 +28,49 @@
             <footer>
                 <div class="pull-right">
                     {{#if isUserAuthorized}}
-                        <a class="btn btn-success btn-xs" href="/ad/edit/{{ad.id}}"><i class="fa fa-pencil fa-lg" aria-hidden="true"></i>
-                        </a>
-                        <a class="btn btn-danger btn-xs" href="/ad/delete/{{ad.id}}"><i class="fa fa-trash fa-lg" aria-hidden="true"></i>
-                        </a>
+                    <a class="btn btn-success btn-xs" href="/ad/edit/{{ad.id}}">
+                        <i class="fa fa-pencil fa-lg" aria-hidden="true"></i>
+                    </a>
+                    <a class="btn btn-danger btn-xs" href="/ad/delete/{{ad.id}}">
+                        <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
+                    </a>
                     {{/if}}
                 </div>
             </footer>
 
-            <br><br>
-            <h3>Write Comment</h3>
+            <br>
+            <br> {{#if user}}
             <div id='form'>
                 <div class="row">
                     <div class="col-md-12">
+                        <h3>Write Comment</h3>
                         <form action="" method="POST" id="commentform">
-                            {{#unless user}}
-                            <div id="comment-name" class="form-row">
-                                <input type = "text" placeholder = "Name (required)" name = "username"  id = "name" >
-                            </div><br>
-                            {{/unless}}
                             <div id="comment-message" class="form-row">
-                                <textarea rows="3" class="form-control" name = "comment" minlength="7" placeholder = "Message" id = "comment" required ></textarea>
+                                <textarea rows="3" class="form-control" name="comment" minlength="7" placeholder="Message" id="comment" required></textarea>
                                 <br>
-                                <div><input type="submit" name="csubmit" id="commentSubmit" value="Submit Comment"></div>
+                                <div>
+                                    <input type="submit" name="csubmit" id="commentSubmit" value="Submit Comment">
+                                </div>
                             </div>
                             <br>
                         </form>
                     </div>
                 </div>
             </div>
+            {{/if}}
         </div>
         {{#each ad.comments}}
-            <div class="col-sm-8 col-lg-offset-2">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <strong>{{this.username}}</strong> <span class="text-muted">commented on {{this.date}}</span>
-                    </div>
-                    <div class="panel-body">{{this.content}}</div>
+        <div class="col-sm-8 col-lg-offset-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <strong>{{this.username}}</strong>
+                    <span class="text-muted">commented on {{this.date}}</span>
                 </div>
+                <div class="panel-body">{{this.content}}</div>
             </div>
+        </div>
         {{/each}}
-        </div>
-        </div>
     </div>
+</div>
+</div>
 </div>

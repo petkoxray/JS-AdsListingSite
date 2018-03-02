@@ -6,12 +6,12 @@ const encryption = require('./../utilities/encryption');
 
 let userSchema = mongoose.Schema(
   {
-    email: {type: String, required: true, unique: true},
-    passwordHash: {type: String, required: true},
-    fullName: {type: String, required: true},
-    salt: {type: String, required: true},
-    ads: [{type: ObjectId, ref: 'Ad'}],
-    roles: [{type: ObjectId, ref: 'Role'}]
+    email: { type: String, required: true, unique: true },
+    passwordHash: { type: String, required: true },
+    fullName: { type: String, required: true },
+    salt: { type: String, required: true },
+    ads: [{ type: ObjectId, ref: 'Ad' }],
+    roles: [{ type: ObjectId, ref: 'Role' }]
   }
 );
 
@@ -34,7 +34,7 @@ userSchema.method({
   },
 
   isInRole: function (roleName) {
-    return Role.findOne({name: roleName}).then(role => {
+    return Role.findOne({ name: roleName }).then(role => {
       if (!role) {
         return false;
       }
@@ -45,7 +45,7 @@ userSchema.method({
   },
 
   deleteUser: function () {
-    for (let role of this.roles){
+    for (let role of this.roles) {
       Role.findById(role).then(role => {
         role.users.remove(this.id);
         role.save();
@@ -53,7 +53,7 @@ userSchema.method({
     }
 
     let Ad = mongoose.model('Ad');
-    for (let ad of this.ads){
+    for (let ad of this.ads) {
       Ad.findById(ad).then(ad => {
         ad.deleteAd();
         ad.remove();
@@ -73,11 +73,11 @@ module.exports = User;
 module.exports.initialize = () => {
   let email = 'admin@abv.bg';
 
-  User.findOne({email: email}).then(admin => {
+  User.findOne({ email: email }).then(admin => {
     if (admin) {
       console.log('Admin is already created!');
     } else {
-      Role.findOne({name: 'Admin'}).then(role => {
+      Role.findOne({ name: 'Admin' }).then(role => {
 
         if (!role) {
           return;

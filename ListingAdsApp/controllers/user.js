@@ -12,7 +12,7 @@ module.exports = {
   registerPost: (req, res) => {
     let registerArgs = req.body;
 
-    User.findOne({email: registerArgs.email}).then(user => {
+    User.findOne({ email: registerArgs.email }).then(user => {
       let errorMsg = '';
       if (user) {
         errorMsg = 'User with the same email exists!';
@@ -27,7 +27,7 @@ module.exports = {
         let salt = encryption.generateSalt();
         let passwordHash = encryption.hashPassword(registerArgs.password, salt);
         let roles = [];
-        Role.findOne({name: 'User'}).then(role => {
+        Role.findOne({ name: 'User' }).then(role => {
           roles.push(role.id);
           let userObject = {
             email: registerArgs.email,
@@ -40,7 +40,7 @@ module.exports = {
             role.users.push(user.id);
             role.save(err => {
               if (err) {
-                res.render('user/register', {error: err.message})
+                res.render('user/register', { error: err.message })
               } else {
                 req.logIn(user, (err) => {
                   if (err) {
@@ -52,11 +52,9 @@ module.exports = {
                   res.redirect('/');
                 });
               }
-
             });
           });
         });
-
       }
     });
   },
@@ -67,7 +65,7 @@ module.exports = {
 
   loginPost: (req, res) => {
     let loginArgs = req.body;
-    User.findOne({email: loginArgs.email}).then(user => {
+    User.findOne({ email: loginArgs.email }).then(user => {
       if (!user || !user.authenticate(loginArgs.password)) {
         let errorMsg = 'Either username or password is invalid!';
         loginArgs.error = errorMsg;
@@ -78,7 +76,7 @@ module.exports = {
       req.logIn(user, (err) => {
         if (err) {
           console.log(err);
-          res.redirect('/user/login', {error: err.message});
+          res.redirect('/user/login', { error: err.message });
           return;
         }
 
@@ -93,36 +91,36 @@ module.exports = {
   },
 
   detailsGet: (req, res) => {
-    res.render('user/details', {user: req.user});
+    res.render('user/details', { user: req.user });
   },
 
   detailsPost: (req, res) => {
     let id = req.user.id;
     let userArgs = req.body;
 
-    User.update({_id: id}, {$set: {fullName: userArgs.fullName}})
+    User.update({ _id: id }, { $set: { fullName: userArgs.fullName } })
       .then(updateStatus => {
         res.redirect('/user/details/')
       });
   },
 
   myAdsGet: (req, res) => {
-    Ad.find({author: req.user.id})
+    Ad.find({ author: req.user.id })
       .populate('author category town')
       .then(ads => {
         Utils.adsReformat(ads);
-        res.render('user/myads', {ads: ads})
+        res.render('user/myads', { ads: ads })
       });
   },
 
   userAdsGet: (req, res) => {
     let id = req.params.id;
 
-    Ad.find({author: id})
+    Ad.find({ author: id })
       .populate('author category town')
       .then(ads => {
         Utils.adsReformat(ads);
-        res.render('user/ads', {ads: ads})
+        res.render('user/ads', { ads: ads })
       });
   }
 };
